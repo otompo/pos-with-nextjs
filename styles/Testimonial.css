@@ -1,0 +1,68 @@
+.testimonial-container {
+  margin-bottom: 20px;
+  height: 50vh;
+  justify-content: center;
+  position: relative;
+}
+.carousel-caption {
+  right: 0vh !important;
+  top: 30px !important;
+  bottom: 0rem !important;
+  left: 2% !important;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  color: #fff;
+  text-align: center;
+}
+
+.monial {
+  height: 260px;
+  background: #eee;
+  color: #000;
+  margin-bottom: 50px;
+  padding: 20px;
+}
+
+.monial span {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.caption-container .ant-avatar {
+  margin-top: 50px !important;
+}
+
+.caption-container p {
+  color: #000 !important;
+}
+
+.carousel-text {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px;
+}
+
+.testimonial .lead {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px;
+}
+
+@media screen and (max-width: 940px) {
+  .monial {
+    color: #000;
+  }
+
+  .monial span {
+    font-size: 10px;
+  }
+
+  .carousel-text {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px;
+  }
+}
