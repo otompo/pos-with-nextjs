@@ -23,10 +23,10 @@ const { confirm } = Modal;
 
 const ManageProducts = () => {
   const [values, setValues] = useState({
-    name: 'Food',
-    price: '188',
-    quantity: '254',
-    batchId: 'batchId123',
+    name: '',
+    price: '',
+    quantity: '',
+    batchId: '',
     tax: '',
     discount: '',
     loading: false,
@@ -44,7 +44,7 @@ const ManageProducts = () => {
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState([]); // categories
   const [progress, setProgress] = useState(0);
-  const [image, setImage] = useState({});
+  const [image, setImage] = useState('/img/preview.ico');
   const [csvFile, setCsvFile] = useState('');
   const [imagePreview, setImagePreview] = useState('');
   const [totalInStock, setTotalInStock] = useState('');
@@ -175,22 +175,22 @@ const ManageProducts = () => {
         loading: false,
       });
       setImagePreview('');
-      // setSelectedCategory('');
+      setImage({});
       setSuccess(false);
       setOk(false);
     } catch (err) {
       console.log(err);
       toast.error(err.response.data.message);
-      setValues({
-        ...values,
-        name: '',
-        price: '',
-        batchId: '',
-        quantity: '',
-        tax: '',
-        discount: '',
-        loading: false,
-      });
+      // setValues({
+      //   ...values,
+      //   name: '',
+      //   price: '',
+      //   batchId: '',
+      //   quantity: '',
+      //   tax: '',
+      //   discount: '',
+      //   loading: false,
+      // });
       setSuccess(false);
       setOk(false);
     }
@@ -531,7 +531,7 @@ const ManageProducts = () => {
               onOk={handleOk}
               onCancel={handleCancel}
               footer={null}
-              width={800}
+              width={900}
             >
               <div className="row">
                 <div className="col-md-6">
@@ -615,32 +615,38 @@ const ManageProducts = () => {
                       />
                     </div>
 
-                    <div className="form-group">
-                      <label className="btn btn-dark btn-block text-left mt-3 text-center">
-                        {loading ? (
-                          <span className="spinLoader">
-                            <Spin />
-                          </span>
-                        ) : (
-                          `${uploadButtonText}`
-                        )}
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="btn btn-dark btn-block text-left mt-3 text-center">
+                            {loading ? (
+                              <span className="spinLoader">
+                                <Spin />
+                              </span>
+                            ) : (
+                              `${uploadButtonText}`
+                            )}
 
-                        <input
-                          type="file"
-                          name="image"
-                          size="large"
-                          onChange={handleImage}
-                          accept="image/*"
-                          hidden
-                        />
-                      </label>
-                    </div>
-                    <div className="form-group">
-                      {imagePreview ? (
-                        <Avatar size={35} src={imagePreview} />
-                      ) : (
-                        <></>
-                      )}
+                            <input
+                              type="file"
+                              name="image"
+                              size="large"
+                              onChange={handleImage}
+                              accept="image/*"
+                              hidden
+                            />
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-md-4 offset-md-2">
+                        <div className="form-group mt-3">
+                          {imagePreview ? (
+                            <Avatar size={40} src={imagePreview} />
+                          ) : (
+                            <Avatar size={40} src="/img/preview.ico" />
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <div className="form-group">
                       {progress > 0 && (
@@ -684,7 +690,15 @@ const ManageProducts = () => {
                 <div className="col-md-6">
                   <h1 className="lead  ml-5">Categories</h1>
                   <hr />
-                  <ul style={{ maxHeight: '200px' }}>{showCategories()}</ul>
+                  <div className="row">
+                    <div className="col-md-12">
+                      <ul>{showCategories()}</ul>
+                    </div>
+                    {/* <div className="col-md-6">
+                      <ul>{showCategoriesS()}</ul>
+                    </div> */}
+                  </div>
+
                   <hr />
                   <div className="row">
                     <div className="col-md-6">

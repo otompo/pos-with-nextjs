@@ -42,6 +42,10 @@ const productSchema = mongoose.Schema(
       require: true,
       trim: true,
     },
+    imageDefualt: {
+      type: String,
+      default: '/img/preview.ico',
+    },
     imagePath: { type: String, require: true },
     category: [{ type: ObjectId, ref: 'Category', required: true }],
     user: { type: ObjectId, ref: 'User', required: true },

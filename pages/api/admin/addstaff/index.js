@@ -10,6 +10,4 @@ dbConnect();
 
 handler.use(isAuthenticatedUser, isAdmin).post(addStaff);
 
-// handler.use(isAuthenticatedUser, isAdmin).get(getAllCategories);
-
 export default handler;

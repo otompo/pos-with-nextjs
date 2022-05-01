@@ -151,19 +151,31 @@ export const updateProductQuantity = catchAsync(async (req, res, next) => {
 
 // update product
 export const updateProduct = catchAsync(async (req, res, next) => {
+  const { name, selectedCategory, price, quantity, batchId, tax, discount } =
+    req.body;
+
   const { slug } = req.query;
   const product = await Product.findOne({ slug });
+  // var slugname = slugify(name).toLowerCase();
 
-  const updateProduct = await Product.findOneAndUpdate(
-    { slug },
+  const update = await Product.findOneAndUpdate(
+    { slug: product.slug },
     {
+      slug: slugify(name).toLowerCase(),
+      name: name,
+      category: selectedCategory,
+      price: price,
+      quantity: quantity,
+      batchId: batchId,
+      tax: tax,
+      discount: discount,
       ...req.body,
     },
     {
       new: true,
     },
   );
-  res.send(updateProduct);
+  res.send(update);
 });
 
 // delete product

@@ -19,7 +19,6 @@ const ManageEditProduct = () => {
     price: '',
     quantity: '',
     batchId: '',
-    expireDate: '',
     tax: '',
     discount: '',
     loading: false,
@@ -34,7 +33,6 @@ const ManageEditProduct = () => {
   const [expireDate, setExpireDate] = useState(new Date());
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState([]); // categories
   const [progress, setProgress] = useState(0);
@@ -46,10 +44,25 @@ const ManageEditProduct = () => {
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
+  // console.log('selectedCategory', selectedCategory);
+  // console.log('checked', checked);
 
   useEffect(() => {
     loadSingleProducts();
-  }, [slug, success]);
+    loadCategories();
+    // setSelectedCategory(checked);
+  }, [slug]);
+
+  const loadSingleProducts = async () => {
+    try {
+      const { data } = await axios.get(`/api/admin/products/edit/${slug}`);
+      setValues(data);
+      setCategoriesArray(data.category);
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data.message);
+    }
+  };
 
   const loadCategories = async () => {
     try {
@@ -60,35 +73,53 @@ const ManageEditProduct = () => {
     }
   };
 
-  const loadSingleProducts = async () => {
-    try {
-      const { data } = await axios.get(`/api/admin/products/edit/${slug}`);
-      setValues(data);
-    } catch (err) {
-      console.log(err);
-      toast.error(err.response.data.message);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setOk(true);
-      const { data } = await axios.put(`/api/admin/products/edit/${slug}`, {
+      setValues({
         ...values,
-        // selectedCategory,
+        loading: true,
+      });
+      const { data } = await axios.put(`/api/admin/products/edit/${slug}`, {
+        name: values.name,
+        price: values.price,
+        quantity: values.quantity,
+        batchId: values.batchId,
+        tax: values.tax,
+        discount: values.discount,
+        selectedCategory: checked,
         // expireDate,
         // image,
         // discountPrice,
       });
       toast.success('Success');
-      setImagePreview('');
+      router.push('/admin/products');
       setOk(false);
     } catch (err) {
-      console.log(err);
-      toast.error(err.response.data.message);
+      console.log(err.response.data.message);
+      // toast.error(err.response.data.message);
       setOk(false);
+      //   setValues({
+      //     ...values,
+      //     name: '',
+      //     price: '',
+      //     quantity: '',
+      //     batchId: '',
+      //     expireDate: '',
+      //     tax: '',
+      //     discount: '',
+      //     loading: false,
+      //   });
     }
+  };
+
+  const setCategoriesArray = (blogCategories) => {
+    let ca = [];
+    blogCategories.map((c, i) => {
+      ca.push(c._id);
+    });
+    setChecked(ca);
   };
 
   const handleToggle = (c) => () => {
@@ -107,6 +138,16 @@ const ManageEditProduct = () => {
     // formData.set('categories', all);
   };
 
+  const findOutCategory = (c) => {
+    const result = checked.indexOf(c);
+
+    if (result !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const showCategories = () => {
     return (
       categories &&
@@ -115,6 +156,7 @@ const ManageEditProduct = () => {
           <input
             onChange={handleToggle(c._id)}
             type="checkbox"
+            checked={findOutCategory(c._id)}
             className="mr-2"
           />
           <label className="form-check-label">{c.name}</label>
@@ -149,7 +191,19 @@ const ManageEditProduct = () => {
     <Layout title={slug}>
       <AdminRoute>
         <div className="container-fluid ourWorks">
-          <h1 className="lead">Manage Products</h1>
+          <div className="row my-3">
+            <div className="col-md-6">
+              <h1 className="lead">Manage {values.name}</h1>
+            </div>
+            <div className="col-md-4 offset-md-2 flost-left">
+              <h1 className="lead">Discount Price </h1>
+              <h4>
+                GH &#x20B5;
+                {values.price - (values.price * values.discount) / 100}
+                .00
+              </h4>
+            </div>
+          </div>
           <hr />
           <div className="row mx-3">
             <div className="col-md-6">
@@ -222,16 +276,16 @@ const ManageEditProduct = () => {
                     required
                   />
                 </div>
-                <div className="form-group">
+                {/* <div className="form-group">
                   <DatePicker
                     className="w-100"
                     selected={expireDate}
-                    placeholderText={values.expireDate}
+                    // placeholderText={values.expireDate}
                     onChange={(date) => setExpireDate(date)}
                     minDate={new Date()}
                     // dateFormat="MM/dd/yyyy h:mm aa"
                     isClearable
-                    // placeholderText="I have been cleared!"
+                    placeholderText="I have been cleared!"
                   />
                 </div>
 
@@ -279,7 +333,7 @@ const ManageEditProduct = () => {
                       steps={10}
                     />
                   )}
-                </div>
+                </div> */}
 
                 <div className="d-grid gap-2 my-2 ">
                   <button
@@ -288,8 +342,6 @@ const ManageEditProduct = () => {
                       !values.name ||
                       !values.price ||
                       !values.batchId ||
-                      !values.discount ||
-                      !values.tax ||
                       !expireDate ||
                       loading
                     }
@@ -303,20 +355,8 @@ const ManageEditProduct = () => {
             <div className="col-md-6">
               <h1 className="lead  ml-5">Categories</h1>
               <hr />
-              <ul style={{ maxHeight: '200px' }}>{showCategories()}</ul>
+              <ul>{showCategories()}</ul>
               <hr />
-              <div className="row">
-                <div className="col-md-6">
-                  <h1 className="lead">Discount Price </h1>
-                </div>
-                <div className="col-md-6">
-                  <h4>
-                    GH&#x20B5;
-                    {values.price - (values.price * values.discount) / 100}
-                    .00
-                  </h4>
-                </div>
-              </div>
             </div>
           </div>
         </div>
