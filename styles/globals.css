@@ -64,6 +64,24 @@ a {
   color: var(--primary-red);
 }
 
+.ourWorks .button {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 300;
+  text-transform: uppercase;
+  background-color: var(--primary-color);
+  border: 1px solid var(--white-color);
+  border-radius: 25px;
+}
+
+.ourWorks .button:hover {
+  background: var(--secondary-color);
+  color: #000 !important;
+  border: 1px solid var(--primary-dark);
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .line {
   display: block;
   width: 40px;

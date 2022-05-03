@@ -25,5 +25,6 @@ const categorySchema = new Schema(
   { timestamps: true },
 );
 
-module.exports =
-  mongoose.models.Category || mongoose.model('Category', categorySchema);
+export default mongoose.models && mongoose.models.Category
+  ? mongoose.models.Category
+  : mongoose.model('Category', categorySchema);

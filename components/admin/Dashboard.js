@@ -13,10 +13,10 @@ const Dashboard = ({ children }) => {
   useEffect(() => {
     getTotalUsers();
     showCategory();
-    showProducts();
+    showProduct();
   }, []);
 
-  const showProducts = async () => {
+  const showProduct = async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(`/api/admin/products`);

@@ -39,12 +39,13 @@ const Layout = ({ children, title = 'POS' }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
           name="description"
-          content="Get all your quality video production when it comes to Video production services Specialize in weddings
-          Commercial & private video advertising
-          Film making
-          Parties videos
-          Family videos
-          Business events videos"
+          content="Users of this application can manage their 
+          products instock,
+          products about to go out ofstock, 
+          products outstock,
+          products about expire,
+          products expired
+          export and import products in CSV formart"
         />
         <meta
           property="og:title"
