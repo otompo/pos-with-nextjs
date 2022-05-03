@@ -1,3 +1,5 @@
+import categoryModel from './categoryModel';
+
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 const productSchema = mongoose.Schema(
@@ -49,7 +51,7 @@ const productSchema = mongoose.Schema(
 
     imagePath: { type: String, require: true },
 
-    category: [{ type: ObjectId, ref: 'Category', required: true }],
+    category: [{ type: mongoose.Schema.Types.ObjectId, ref: categoryModel }],
 
     user: { type: ObjectId, ref: 'User', required: true },
 
