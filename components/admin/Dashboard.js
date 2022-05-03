@@ -6,7 +6,7 @@ import Card from './Card';
 
 const Dashboard = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [products, setProduts] = useState('');
+  const [products, setProduts] = useState([]);
   const [usersTotal, setUsersTotal] = useState([]);
   const [category, setCategory] = useState([]);
 
