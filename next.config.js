@@ -2,9 +2,8 @@ module.exports = {
   reactStrictMode: true,
   env: {
     DB_URI:
-      'mongodb+srv://sasco:UcGGroZRklB1WjDy@cluster0.urp0n.mongodb.net/afrotaliandb?retryWrites=true&w=majority',
+      'mongodb+srv://sasco:oAPRV35UNyWLorpF@cluster0.fpvql.mongodb.net/posdb?retryWrites=true&w=majority',
     DB_LOCAL: 'mongodb://localhost:27017/posdb',
-    CLIENT_URL: 'http://localhost:3000',
     JWT_SECRET: 'sfskftsfdssdsp3405059o53H530smdslf',
     JWT_COOKIE_EXPIRES_IN: '50',
     AWS_BUCKET: 'afrotalian-bucket',
