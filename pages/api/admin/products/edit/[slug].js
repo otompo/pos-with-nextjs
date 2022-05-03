@@ -12,7 +12,7 @@ const handler = nc({ onError });
 
 dbConnect();
 
-handler.put(updateProduct);
+handler.use(isAuthenticatedUser, isAdmin).put(updateProduct);
 handler.use(isAuthenticatedUser, isAdmin).get(getSingleProduct);
 
 export default handler;

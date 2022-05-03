@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MDBDataTable } from 'mdbreact';
-import { Avatar, Spin, Modal, Progress, Badge, Button, Upload } from 'antd';
+import { Avatar, Spin, Modal, Progress, Badge, Button } from 'antd';
 import download from 'downloadjs';
 import Link from 'next/link';
 import {

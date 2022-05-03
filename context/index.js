@@ -24,7 +24,7 @@ const rootReducer = (state, action) => {
 };
 
 // context provider
-const Provider = ({ children }) => {
+const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(rootReducer, initialState);
 
   // router
@@ -76,4 +76,4 @@ const Provider = ({ children }) => {
   );
 };
 
-export { Context, Provider };
+export { Context, AuthProvider };

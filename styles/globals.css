@@ -1,6 +1,7 @@
 :root {
   --primary-color: #33195a;
-  --primary-dark: #f58220;
+  --primary-light: #f5202072;
+  --primary-red: #ff0000;
   --secondary-color: #e3d002;
   --secondary-dark: #e3d002;
   --white-color: #fff;
@@ -48,21 +49,19 @@ a {
   text-decoration: none;
 }
 
-.button {
-  padding: 17px 28px;
-  font-size: 1rem;
-  color: #fff;
+.deletbtn {
+  padding: 5px;
+  margin-bottom: 5px;
+  font-size: 0.5rem;
+  color: var(--primary-light);
   font-weight: 400;
   text-transform: uppercase;
-  background-color: var(--primary-color) !important;
-  border: 1px solid var(--primary-color) !important;
-  border-radius: 4px;
+
   cursor: pointer;
 }
 
-.button:hover {
-  background: var(--primary-dark) !important;
-  border: 1px solid var(--primary-dark) !important;
+.deletbtn:hover {
+  color: var(--primary-red);
 }
 
 .line {
@@ -195,10 +194,32 @@ h3 {
 /* .ant-modal-mask {
   background-color: rgb(0 0 0 / 13%) !important;
 } */
-
+.bs-select select {
+  display: inline-block !important;
+  margin-bottom: 10px !important;
+}
 .exportData button:hover {
   background: var(--primary-color) !important;
 }
+
+.stockCounter input {
+  border: none;
+  width: 3rem;
+  text-align: center;
+  margin: 0 10px 10px 10px;
+}
+
+.plus,
+.minus {
+  padding: 0.1rem 0.1rem;
+}
+
+.stockCounter input::-webkit-outer-spin-button,
+.stockCounter input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* ****************************Import Styling********************************* */
 
 @import url('./Footer.css');

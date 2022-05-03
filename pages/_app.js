@@ -3,7 +3,8 @@ import '../styles/globals.css';
 // import { csrfToken } from '../node_modules/csrf';
 import Router from 'next/router';
 import Loader from '../components/layout/Loader';
-import { Provider } from '../context';
+import { AuthProvider } from '../context';
+import { CartProvider } from '../context/cartContext';
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -21,10 +22,12 @@ function MyApp({ Component, pageProps }) {
   });
 
   return (
-    <Provider>
-      <Component {...pageProps} />
+    <AuthProvider>
+      <CartProvider>
+        <Component {...pageProps} />
+      </CartProvider>
       {/* {loading ? <Loader /> :}</>; */}
-    </Provider>
+    </AuthProvider>
   );
 }
 

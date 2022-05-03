@@ -2,7 +2,6 @@ import Product from '../models/productModel';
 import Price from '../models/priceModel';
 import catchAsync from '../utils/catchAsync';
 import slugify from 'slugify';
-import path from 'path';
 import AppError from '../utils/appError';
 const { Parser } = require('json2csv');
 const csvtojson = require('csvtojson');
@@ -56,6 +55,11 @@ export const getAllProducts = catchAsync(async (req, res) => {
     total: products.length,
     products,
   });
+});
+
+export const getProducts = catchAsync(async (req, res) => {
+  const products = await Product.find({}).sort({ createdAt: -1 });
+  res.status(200).send(products);
 });
 export const getSingleProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findOne({ slug: req.query.slug }).populate(

@@ -46,9 +46,13 @@ const productSchema = mongoose.Schema(
       type: String,
       default: '/img/preview.ico',
     },
+
     imagePath: { type: String, require: true },
+
     category: [{ type: ObjectId, ref: 'Category', required: true }],
+
     user: { type: ObjectId, ref: 'User', required: true },
+
     slug: {
       type: String,
       unique: true,
@@ -59,5 +63,8 @@ const productSchema = mongoose.Schema(
   { timestamps: true },
 );
 
-module.exports =
-  mongoose.models.Product || mongoose.model('Product', productSchema);
+// module.exports =
+// mongoose.models.Product || mongoose.model('Product', productSchema);
+export default mongoose.models && mongoose.models.Product
+  ? mongoose.models.Product
+  : mongoose.model('Product', productSchema);

@@ -3,10 +3,9 @@ import UserRouter from '../../components/routes/UserRoutes';
 import Layout from '../../components/layout/Layout';
 import { getSession } from 'next-auth/client';
 import { Context } from '../../context';
+import ManageProductsForSale from '../../components/ManageProductsForSale';
 
 const UserIndex = () => {
-  const [loading, setLoading] = useState(false);
-  const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState('');
 
   const {
@@ -18,14 +17,7 @@ const UserIndex = () => {
     process.browser && setCurrent(window.location.pathname);
   }, [process.browser && window.location.pathname, user]);
 
-  return (
-    <Layout title="Dashboard">
-      <UserRouter>
-        <h1 className="lead">Sales</h1>
-        <hr />
-      </UserRouter>
-    </Layout>
-  );
+  return <ManageProductsForSale />;
 };
 
 export async function getServerSideProps(context) {
