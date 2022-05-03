@@ -1,6 +1,7 @@
 import { CaretUpOutlined, TeamOutlined, BookOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import { Spin } from 'antd';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import Card from './Card';
 
 const Dashboard = ({ children }) => {
@@ -59,50 +60,25 @@ const Dashboard = ({ children }) => {
         <Card
           icon={<TeamOutlined style={{ color: 'green' }} />}
           cade_title="Total Staff"
-          cade_total={usersTotal.length}
+          cade_total={loading ? <Spin /> : usersTotal.length}
         />
 
         <Card
           icon={<BookOutlined style={{ color: 'green' }} />}
           cade_title="Total Products"
-          cade_total={products && products}
+          cade_total={loading ? <Spin /> : products}
         />
 
         <Card
           icon={<CaretUpOutlined style={{ color: 'green' }} />}
           cade_title="Total Categories"
-          cade_total={category}
+          cade_total={loading ? <Spin /> : category}
         />
-      </div>
-      <div className="row my-4">
-        {/* <div className="col-md-10 offset-md-1">
-          <div className="card admin_card">
-            <div className="card-body">
-              <h5 className="card-title">Newly Joined Staff</h5>
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Created At</th>
-                    <th scope="col">Email</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users &&
-                    users.map((user) => {
-                      return (
-                        <tr key={user._id}>
-                          <td>{user.name}</td>
-                          <td>{moment(user.createdAt).fromNow()}</td>
-                          <td>{user.email}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div> */}
+        <Card
+          icon={<CaretUpOutlined style={{ color: 'green' }} />}
+          cade_title="Total Orders"
+          cade_total={loading ? <Spin /> : category}
+        />
       </div>
     </div>
   );

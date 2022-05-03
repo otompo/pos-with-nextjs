@@ -48,16 +48,19 @@ const Layout = ({ children, title = 'POS' }) => {
         />
         <meta
           property="og:title"
-          content="Afrotalian is  the best organization to contact when it comes to video production"
+          content="Code Smart Point of Sales (POS) is the best POS for you when it comes to managing your shop.
+           Manage and track your daily tractions, contact us for on 0245656347/0209576439 "
         />
         <meta
           property="og:description"
-          content="Contact us tor your quality video production when it comes to Video production services Specialize in weddings
-          Commercial & private video advertising
-          Film making
-          Parties videos
-          Family videos
-          Business events videos"
+          content="Users of this application can manage their 
+          products instock,
+          products about to go out ofstock, 
+          products outstock,
+          products about expire,
+          products expired
+          export and import products in CSV formart
+          "
         />
 
         <meta property="og:site_name" content="CODE SMART WEBSOFT" />

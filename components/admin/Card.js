@@ -3,7 +3,7 @@ import { Avatar } from 'antd';
 const Card = (props) => {
   return (
     <Fragment>
-      <div className="col-md-4">
+      <div className="col-md-3">
         <div className="card admin_card">
           <div className="card-body">
             <h5 className="card-title">
