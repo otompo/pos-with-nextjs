@@ -214,13 +214,13 @@ function ManageProductsForSale(props) {
               <h2>POS</h2>
             </div>
             <div className="col-md-4 offset-md-2 float-right">
-              <Link href="/user/cart">
-                <a>
-                  <Badge count={cart && cart.length ? cart.length : 0} showZero>
-                    <ShoppingCartOutlined style={{ fontSize: '40px' }} />
-                  </Badge>
-                </a>
-              </Link>
+              {/* <Link href="/user/cart">
+                <a> */}
+              <Badge count={cart && cart.length ? cart.length : 0} showZero>
+                <ShoppingCartOutlined style={{ fontSize: '40px' }} />
+              </Badge>
+              {/* </a>
+              </Link> */}
             </div>
 
             <div className="col-md-4 float-right">
