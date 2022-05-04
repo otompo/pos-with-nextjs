@@ -76,7 +76,7 @@ const Dashboard = ({ children }) => {
         />
         <Card
           icon={<CaretUpOutlined style={{ color: 'green' }} />}
-          cade_title="Total Orders"
+          cade_title="Total Sales"
           cade_total={loading ? <Spin /> : category}
         />
       </div>

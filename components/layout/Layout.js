@@ -5,8 +5,6 @@ import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'nprogress/nprogress.css';
 import 'antd/dist/antd.css';
-import Login from '../auth/Login';
-import Navbar from '../Navbar';
 import Footer from '../Footer';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';

@@ -39,12 +39,10 @@ const UserNav = () => {
   return (
     <div className="nav flex-column nav-pills mt-2">
       <Link href="/user">
-        <a className={`nav-link  ${current === '/user' && 'active'}`}>
-          Dashboard
-        </a>
+        <a className={`nav-link  ${current === '/user' && 'active'}`}>POS</a>
       </Link>
 
-      <Link href={`/user/manage-profile/update`}>
+      {/* <Link href={`/user/manage-profile/update`}>
         <a
           className={`nav-link  ${
             current === `/user/manage-profile/update` && 'active'
@@ -60,24 +58,13 @@ const UserNav = () => {
                 //   alt={user && user.picture}
                 // />
               }
-              // alt={user.name}
             />
           ) : (
-            <Avatar
-              size={30}
-              src={
-                user && user.picture
-                // <Image
-                //   src={user && user.profileImage.Location}
-                //   alt={user && user.picture}
-                // />
-              }
-              // alt={user.name}
-            />
+            <Avatar size={30} src={user && user.picture} />
           )}{' '}
           {user && user.name}
         </a>
-      </Link>
+      </Link> */}
 
       <Link href="/user/my-daily-sales">
         <a
@@ -89,9 +76,9 @@ const UserNav = () => {
         </a>
       </Link>
 
-      <Link href="/user/fqds">
-        <a className={`nav-link  ${current === '/user/fqds' && 'active'}`}>
-          FAQs
+      <Link href="/user/bills">
+        <a className={`nav-link  ${current === '/user/bills' && 'active'}`}>
+          Bills
         </a>
       </Link>
 

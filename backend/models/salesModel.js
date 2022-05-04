@@ -1,16 +1,63 @@
+import User from './userModel';
+import Product from './productModel';
+
 const mongoose = require('mongoose');
 
 const salesSchema = mongoose.Schema(
   {
-    productName: { type: Array, require: true },
-    // drugName:{type: String,require:true},
-    dateTime: { type: Date, default: Date.now, require: true },
-    totalPrice: { type: String, require: true },
-    tax: { type: String, require: true },
-    paidAmount: { type: String, require: true },
-    balance: { type: String, require: true },
+    products: {
+      type: Array,
+      require: true,
+    },
+    dateTime: {
+      type: Date,
+      default: Date.now,
+      require: true,
+    },
+    subTotal: {
+      type: Number,
+      require: true,
+    },
+    totalTax: {
+      type: Number,
+      require: true,
+    },
+    grandTotal: {
+      type: Number,
+      require: true,
+    },
+    paidAmount: {
+      type: Number,
+      require: true,
+    },
+    paymentMethod: {
+      type: String,
+      default: ['Cash'],
+      require: true,
+      enum: ['Cash', 'MobileMoney'],
+    },
+    balance: {
+      type: String,
+      require: true,
+    },
+    quantitySold: {
+      type: Number,
+      require: true,
+    },
+    cart: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Product,
+      },
+    ],
+    saler: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: User,
+    },
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model('Sales', salesSchema);
+export default mongoose.models && mongoose.models.Sales
+  ? mongoose.models.Sales
+  : mongoose.model('Sales', salesSchema);

@@ -57,10 +57,6 @@ export const getAllProducts = catchAsync(async (req, res) => {
   });
 });
 
-export const getProducts = catchAsync(async (req, res) => {
-  const products = await Product.find({}).sort({ createdAt: -1 });
-  res.status(200).send(products);
-});
 export const getSingleProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findOne({ slug: req.query.slug }).populate(
     'category',

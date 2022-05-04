@@ -6,7 +6,7 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 import Fade from 'react-reveal/Fade';
 import axios from 'axios';
 import { Context } from '../context';
-import { Avatar } from 'antd';
+import { Avatar, Image } from 'antd';
 Router.onRouteChangeStart = (url) => NProgress.start();
 Router.onRouteChangeComplete = (url) => NProgress.done();
 Router.onRouteChangeError = (url) => NProgress.done();
@@ -28,7 +28,7 @@ const Navbar = () => {
     dispatch,
   } = useContext(Context);
 
-  // console.log(current);
+  // console.log(user);
   useEffect(() => {
     loadCurrentUser();
     window.addEventListener('scroll', changebackground);
@@ -79,13 +79,46 @@ const Navbar = () => {
             )}
           </div>
           <ul className={click ? 'nav-menu active' : 'nav-menu'}>
-            <li
+            {/* <li
               className={
                 router.pathname == '/user' ? 'active-nav' : 'nav-item '
               }
             >
               <Link href="/user" onClick={closeMenu}>
                 <a>Dashboard</a>
+              </Link>
+            </li> */}
+            <li>
+              <Link href="/user/manage-profile/update">
+                <a>
+                  {user && user.profileImage ? (
+                    <Avatar
+                      size={32}
+                      src={
+                        user && user.profileImage && user.profileImage.Location
+                      }
+                    />
+                  ) : (
+                    <Avatar
+                      size={30}
+                      src={
+                        <Image
+                          src={user && user.picture}
+                          style={{
+                            borderRadius: '70%',
+                            width: '37px',
+                            height: '37px',
+                            transform: 'translateY(-6px)',
+                            marginRight: '20px',
+                            marginLeft: '-5px',
+                          }}
+                          preview={false}
+                        />
+                      }
+                    />
+                  )}{' '}
+                  {user && user.name}
+                </a>
               </Link>
             </li>
           </ul>

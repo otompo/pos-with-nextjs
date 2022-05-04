@@ -12,7 +12,7 @@ export const addToCart = (product, cart) => {
   });
 
   if (!check) return toast.error('The product has been added to cart.');
-  toast.success(`${product.name} Added to cart`);
+  // toast.success(`${product.name} Added to cart`);
   return { type: 'ADD_CART', payload: [...cart, { ...product, count: 1 }] };
 };
 
@@ -44,9 +44,4 @@ export const removeFromCart = (data, id) => {
   });
   toast.success(`remove from cart`);
   return { type: 'ADD_CART', payload: newData };
-};
-
-export const updateItem = (data, id, post, type) => {
-  const newData = data.map((item) => (item._id === id ? post : item));
-  return { type, payload: newData };
 };

@@ -1,4 +1,4 @@
-import categoryModel from './categoryModel';
+import Category from './categoryModel';
 
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
@@ -51,7 +51,7 @@ const productSchema = mongoose.Schema(
 
     imagePath: { type: String, require: true },
 
-    category: [{ type: mongoose.Schema.Types.ObjectId, ref: categoryModel }],
+    category: [{ type: mongoose.Schema.Types.ObjectId, ref: Category }],
 
     user: { type: ObjectId, ref: 'User', required: true },
 
@@ -65,8 +65,6 @@ const productSchema = mongoose.Schema(
   { timestamps: true },
 );
 
-// module.exports =
-// mongoose.models.Product || mongoose.model('Product', productSchema);
 export default mongoose.models && mongoose.models.Product
   ? mongoose.models.Product
   : mongoose.model('Product', productSchema);

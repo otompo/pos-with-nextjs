@@ -9,7 +9,6 @@ import {
 import AdminRoute from '../routes/AdminRoutes';
 import Layout from '../layout/Layout';
 import moment from 'moment';
-import TextTruncate from 'react-text-truncate';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loader from '../layout/Loader';
@@ -19,14 +18,12 @@ const { confirm } = Modal;
 const ManageCategories = () => {
   const [values, setValues] = useState({
     name: '',
-    // description: '',
     loading: false,
   });
   const [success, setSuccess] = useState(false);
   const [ok, setOk] = useState(false);
   const [categories, setCategories] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -72,12 +69,12 @@ const ManageCategories = () => {
         ...values,
       });
       toast.success('Success');
-      setValues({ ...values, name: '', description: '', loading: false });
+      setValues({ ...values, name: '', loading: false });
       setSuccess(false);
     } catch (err) {
       console.log(err);
       // toast.error(err.response.data.message);
-      setValues({ ...values, name: '', description: '', loading: false });
+      setValues({ ...values, name: '', loading: false });
       setSuccess(false);
     }
   };
@@ -196,7 +193,7 @@ const ManageCategories = () => {
                 <div className="d-grid gap-2 my-2 ">
                   <button
                     className="btn btn-primary"
-                    disabled={!values.name || loading}
+                    disabled={!values.name}
                     type="submit"
                   >
                     {values.loading ? <SyncOutlined spin /> : 'Submit'}

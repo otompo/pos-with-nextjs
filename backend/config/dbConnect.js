@@ -5,7 +5,7 @@ const dbConnect = () => {
     return;
   }
   mongoose
-    .connect(process.env.DB_URI, {})
+    .connect(process.env.DB_LOCAL, {})
     .then((con) => console.log('Connected to database'));
 };
 

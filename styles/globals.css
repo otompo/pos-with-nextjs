@@ -3,7 +3,7 @@
   --primary-light: #f5202072;
   --primary-red: #ff0000;
   --secondary-color: #e3d002;
-  --secondary-dark: #e3d002;
+  --secondary-dark: #e35102;
   --white-color: #fff;
   --overlay: rgba(0, 0, 0, 0.7);
 }
@@ -67,7 +67,7 @@ a {
 .ourWorks .button {
   font-size: 1rem;
   color: #fff;
-  font-weight: 300;
+  font-weight: bold;
   text-transform: uppercase;
   background-color: var(--primary-color);
   border: 1px solid var(--white-color);
@@ -80,6 +80,8 @@ a {
   border: 1px solid var(--primary-dark);
   cursor: pointer;
   font-weight: bold;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
 }
 
 .line {
