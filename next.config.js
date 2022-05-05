@@ -1,7 +1,7 @@
 module.exports = {
   reactStrictMode: true,
   env: {
-    DB_URI:
+    DB_URL:
       'mongodb+srv://sasco:oAPRV35UNyWLorpF@cluster0.fpvql.mongodb.net/posdb?retryWrites=true&w=majority',
     DB_LOCAL: 'mongodb://localhost:27017/posdb',
     JWT_SECRET: 'sfskftsfdssdsp3405059o53H530smdslf',

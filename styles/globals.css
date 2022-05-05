@@ -177,7 +177,7 @@ h3 {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #33195a !important;
+  height: 79% !important;
   background-clip: border-box;
   border-radius: 1rem;
   border: 0px !important;

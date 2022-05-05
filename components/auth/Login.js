@@ -2,9 +2,9 @@ import React, { useState, Fragment, useContext } from 'react';
 import { getSession, signIn } from 'next-auth/client';
 import TopTitle from '../home/TopTitle';
 import { toast } from 'react-toastify';
-import { SyncOutlined } from '@ant-design/icons';
 import { Context } from '../../context';
 import { useRouter } from 'next/router';
+import { Spin } from 'antd';
 
 const Login = () => {
   const router = useRouter();
@@ -82,7 +82,7 @@ const Login = () => {
                       className="btn btn-primary"
                       type="submit"
                     >
-                      {loading ? <SyncOutlined spin /> : 'Login'}
+                      {loading ? <Spin /> : 'Login'}
                     </button>
                   </div>
                 </form>

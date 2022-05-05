@@ -52,3 +52,21 @@ const count = async (id, count, oldInStock) => {
     },
   );
 };
+
+export const getAllSales = catchAsync(async (req, res, next) => {
+  const sales = await Sales.find({});
+  res.send({
+    total: sales.length,
+    sales,
+  });
+});
+
+export const getSalesByUser = catchAsync(async (req, res, next) => {
+  const sales = await Sales.find({ saler: req.user._id }).sort({
+    createdAt: -1,
+  });
+  res.send({
+    total: sales.length,
+    sales,
+  });
+});

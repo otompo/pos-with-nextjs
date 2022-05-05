@@ -22,6 +22,7 @@
     "csrf": "^3.1.0",
     "csvtojson": "^2.0.10",
     "downloadjs": "^1.4.7",
+    "easyinvoice": "^2.3.0",
     "express-jwt": "^6.1.0",
     "formidable": "^2.0.1",
     "formidable-serverless": "^1.1.1",

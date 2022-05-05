@@ -8,12 +8,14 @@ const Dashboard = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [products, setProduts] = useState([]);
   const [usersTotal, setUsersTotal] = useState([]);
+  const [totalSales, setTotalSales] = useState([]);
   const [category, setCategory] = useState([]);
 
   useEffect(() => {
     getTotalUsers();
     showCategory();
     showProduct();
+    getTotalSales();
   }, []);
 
   const showProduct = async () => {
@@ -54,30 +56,48 @@ const Dashboard = ({ children }) => {
       setLoading(false);
     }
   };
+
+  const getTotalSales = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(`/api/admin/sales`);
+      // console.log(data);
+      setTotalSales(data.total);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container-fluid" id="admin">
       <div className="row mt-5">
         <Card
+          backgroundColor="#33195a"
           icon={<TeamOutlined style={{ color: 'green' }} />}
           cade_title="Total Staff"
           cade_total={loading ? <Spin /> : usersTotal.length}
         />
 
         <Card
+          backgroundColor="#e3d002"
           icon={<BookOutlined style={{ color: 'green' }} />}
           cade_title="Total Products"
           cade_total={loading ? <Spin /> : products}
         />
 
         <Card
+          backgroundColor="#2F02E3"
           icon={<CaretUpOutlined style={{ color: 'green' }} />}
           cade_title="Total Categories"
           cade_total={loading ? <Spin /> : category}
         />
         <Card
+          backgroundColor="#22cc56"
           icon={<CaretUpOutlined style={{ color: 'green' }} />}
           cade_title="Total Sales"
-          cade_total={loading ? <Spin /> : category}
+          cade_total={loading ? <Spin /> : totalSales}
         />
       </div>
     </div>
