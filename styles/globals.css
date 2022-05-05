@@ -168,6 +168,10 @@ h3 {
   text-align: center;
 }
 
+.invoice__preview {
+  margin-top: 1.25rem;
+}
+
 #admin .card {
   position: relative;
   display: -moz-box;

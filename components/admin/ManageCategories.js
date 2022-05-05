@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MDBDataTable } from 'mdbreact';
-import { Spin, Modal, Avatar, Image } from 'antd';
+import { Modal } from 'antd';
 import {
   ExclamationCircleOutlined,
   DeleteOutlined,

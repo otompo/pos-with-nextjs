@@ -7,7 +7,7 @@ import Layout from '../../components/layout/Layout';
 import Loader from '../../components/layout/Loader';
 import UserRoute from '../../components/routes/UserRoutes';
 
-const HelpAndSupport = () => {
+const Index = () => {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -147,4 +147,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default HelpAndSupport;
+export default Index;

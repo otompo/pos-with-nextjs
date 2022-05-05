@@ -1,4 +1,5 @@
 import Category from './categoryModel';
+import User from './userModel';
 
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
@@ -53,7 +54,7 @@ const productSchema = mongoose.Schema(
 
     category: [{ type: mongoose.Schema.Types.ObjectId, ref: Category }],
 
-    user: { type: ObjectId, ref: 'User', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: User },
 
     slug: {
       type: String,

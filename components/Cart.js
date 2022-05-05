@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { decrease, increase, removeFromCart } from '../actions/Actions';
-import Fade from 'react-reveal/Fade';
+import Zoom from 'react-reveal/Zoom';
 import { DeleteOutlined } from '@ant-design/icons';
 import Modal from 'react-modal';
 import { Context } from '../context';
@@ -9,15 +9,15 @@ function Cart({ item, dispatch, cart }) {
   return (
     <div>
       <div className="cart">
-        <Fade left cascade>
+        <Zoom>
           <ul className="cart-items">
             <>
               <div className="row">
                 <div className="col-md-5">
                   <h6> {item.name}</h6>
                   <p>
-                    {item.count} X GH&#x20B5;{item.discountPrice}= GH&#x20B5;
-                    {item.count * item.discountPrice}
+                    {item.count} X GH&#x20B5; {item.discountPrice}= GH&#x20B5;{' '}
+                    {(item.count * item.discountPrice).toFixed(2)}
                   </p>
                   <p>Tax: {item.tax}</p>
                 </div>
@@ -60,7 +60,7 @@ function Cart({ item, dispatch, cart }) {
                 <p>{Number(item.price) * item.count}</p> */}
             </>
           </ul>
-        </Fade>
+        </Zoom>
       </div>
     </div>
   );

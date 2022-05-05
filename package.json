@@ -49,6 +49,7 @@
     "react-reveal": "^1.2.2",
     "react-testimonial": "^1.0.0",
     "react-text-truncate": "^0.18.0",
+    "react-to-print": "^2.14.7",
     "react-toastify": "^7.0.4",
     "shortid": "^2.2.16",
     "slugify": "^1.6.4",
