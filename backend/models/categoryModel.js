@@ -10,12 +10,6 @@ const categorySchema = new Schema(
       unique: true,
       max: 32,
     },
-
-    // description: {
-    //   type: {},
-    //   minlength: 100,
-    // },
-
     slug: {
       type: String,
       unique: true,

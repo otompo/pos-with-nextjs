@@ -1,10 +1,10 @@
 import { getSession } from 'next-auth/client';
-import SingleMessage from '../../../components/admin/SingleMessage';
+import ManageSettings from '../../../components/admin/ManageSettings';
 
-const SingleMessageIndex = () => {
+const Index = () => {
   return (
     <>
-      <SingleMessage />
+      <ManageSettings />
     </>
   );
 };
@@ -25,4 +25,4 @@ export async function getServerSideProps(context) {
     props: {},
   };
 }
-export default SingleMessageIndex;
+export default Index;

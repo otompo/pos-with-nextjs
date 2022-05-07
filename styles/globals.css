@@ -169,6 +169,25 @@ h3 {
 }
 
 .invoice__preview {
+  position: relative;
+  margin-top: 1.25rem;
+}
+
+#invoice__preview {
+  position: relative;
+  margin-top: 1.25rem;
+}
+
+#invoice__preview .c_logo {
+  position: absolute;
+  left: 60vh;
+  margin-top: 1.25rem;
+}
+
+#invoice__preview .description {
+  position: absolute;
+  left: 50vh;
+  bottom: 20vh;
   margin-top: 1.25rem;
 }
 

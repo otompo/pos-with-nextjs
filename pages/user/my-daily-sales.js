@@ -92,10 +92,10 @@ const Index = () => {
           ),
 
           quantity: `${sale.quantitySold}`,
-          subtotal: `GHS ${sale.subTotal}.00`,
+          subtotal: `GHS ${sale.subTotal.toFixed(2)}`,
           totaltax: `GHS ${sale.totalTax}.00`,
 
-          grandtotal: `GHS ${sale.grandTotal}.00`,
+          grandtotal: `GHS ${sale.grandTotal.toFixed(2)}`,
         });
       });
 

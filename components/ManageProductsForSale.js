@@ -31,6 +31,7 @@ function ManageProductsForSale(props) {
   const [paidAmount, setPaidAmount] = useState(0);
   const [grandTotal, setgGandTotal] = useState(0);
   const [sales, setSales] = useState([]);
+  const [company, setCompany] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -81,6 +82,7 @@ function ManageProductsForSale(props) {
   useEffect(() => {
     showProducts();
     showSales();
+    loadComapny();
   }, [success]);
 
   const componentRef = useRef();
@@ -119,7 +121,17 @@ function ManageProductsForSale(props) {
       setOk(false);
     }
   };
-
+  const loadComapny = async () => {
+    try {
+      // setLoading(true);
+      const { data } = await axios.get(`/api/admin/settings`);
+      setCompany(data);
+      // setLoading(false);
+    } catch (err) {
+      console.log(err);
+      // setLoading(false);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -195,7 +207,7 @@ function ManageProductsForSale(props) {
           // price: `GHS ${
           //   product.discount ? product.discountPrice : product.price
           // }.00`,
-          price: `GHS ${product.discountPrice}.00`,
+          price: `GHS ${product.discountPrice.toFixed(2)}`,
 
           // scan: (
           //   <QRCode
@@ -256,6 +268,7 @@ function ManageProductsForSale(props) {
                 Proceed with payment
               </button>
               <button
+                // disabled={cart.length === 0}
                 className="btn btn-danger mx-2"
                 onClick={() => {
                   setIsModalVisible(true);
@@ -288,7 +301,7 @@ function ManageProductsForSale(props) {
                 <div className="col-md-12 ">
                   <h4 className="d-inline">SUBTOTAL:</h4>
                   <h4 className="d-inline" style={{ color: '#e35102' }}>
-                    GH&#x20B5; {subTotal.toFixed(2)}.00
+                    GH&#x20B5; {subTotal.toFixed(2)}
                   </h4>
                 </div>
               </div>
@@ -296,7 +309,7 @@ function ManageProductsForSale(props) {
                 <div className="col-md-12">
                   <h4 className="d-inline">TAX:</h4>
                   <h4 className="d-inline" style={{ color: '#e35102' }}>
-                    GH&#x20B5; {totalTax}.00
+                    GH&#x20B5; {totalTax.toFixed(2)}
                   </h4>
                 </div>
               </div>
@@ -304,7 +317,7 @@ function ManageProductsForSale(props) {
                 <div className="col-md-12 ">
                   <h4 className="d-inline">GRAND TOTAL:</h4>
                   <h4 className="d-inline" style={{ color: '#e35102' }}>
-                    GH&#x20B5; {(subTotal + totalTax).toFixed(2)}.00
+                    GH&#x20B5; {(subTotal + totalTax).toFixed(2)}
                   </h4>
                 </div>
               </div>
@@ -426,26 +439,44 @@ function ManageProductsForSale(props) {
           </div>
         ) : actionTriggered == 'ACTION_2' ? (
           <div className="invoice__preview bg-white  rounded">
-            <div ref={componentRef} className="p-5">
+            <div ref={componentRef} className="p-5" id="invoice__preview">
+              {company &&
+                company.map((item) => (
+                  <p className="c_logo" key={item._id}>
+                    {item.logo ? (
+                      <Avatar size={90} src={item && item.logo} />
+                    ) : (
+                      <Avatar size={90} src={item && item.logoDefualt} />
+                    )}
+                  </p>
+                ))}
+
               <div className="container">
                 <div className="row">
-                  <div className="col-md-12">
-                    <ul>
-                      <li>
-                        <h2>CODE SMART POS</h2>
-                      </li>
-                      <li>
-                        <h6 className="d-inline">Email:</h6> codesmart@gmail.com
-                      </li>
-                      <li>
-                        <h6 className="d-inline">Website:</h6>{' '}
-                        codesmartwebsoft.com
-                      </li>
-                      <li>
-                        <h6 className="d-inline">Address:</h6> Sunyani
-                        Baakoniaba Area One
-                      </li>
-                    </ul>
+                  <div className="col-md-7">
+                    {company &&
+                      company.map((item) => (
+                        <ul key={item.slug}>
+                          <li>
+                            <h2>{item.name}</h2>
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Email:</h6> {item.email}
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Website:</h6>{' '}
+                            {item.website}
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Contact:</h6>{' '}
+                            {item.contactNumber}
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Address:</h6>{' '}
+                            {item.address}
+                          </li>
+                        </ul>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -478,7 +509,7 @@ function ManageProductsForSale(props) {
                     <td className="font-bold">Price</td>
                     <td className="font-bold">Quantity</td>
                     <td className="font-bold">Tax</td>
-                    <td className="font-bold">Total Fare</td>
+                    <td className="font-bold">Total</td>
                   </tr>
                 </thead>
 
@@ -495,14 +526,15 @@ function ManageProductsForSale(props) {
                             />
                           </td>
                           <td>{product.name}</td>
-                          <td>GH&#x20B5; {product.discountPrice}.00</td>
+                          <td>GH&#x20B5; {product.discountPrice.toFixed(2)}</td>
                           <td>{product.count}</td>
-                          <td>GH&#x20B5; {product.tax}.00</td>
+                          <td>GH&#x20B5; {product.tax.toFixed(2)}</td>
                           <td>
                             GH&#x20B5;{' '}
-                            {product.tax +
-                              product.count * product.discountPrice}
-                            .00
+                            {(
+                              product.tax +
+                              product.count * product.discountPrice
+                            ).toFixed(2)}
                           </td>
                         </tr>
                       </tbody>
@@ -520,15 +552,15 @@ function ManageProductsForSale(props) {
                           {item.quantitySold}
                           <br />
                           <h6 className="d-inline pl-4"> SUB TOTAL:</h6>{' '}
-                          GH&#x20B5; {item.subTotal}.00
+                          GH&#x20B5; {item.subTotal}
                           <br />
                           <h6 className="d-inline pl-4">
                             {' '}
                             TAX:
-                          </h6> GH&#x20B5; {item.totalTax}.00
+                          </h6> GH&#x20B5; {item.totalTax.toFixed(2)}
                           <br />
                           <h6 className="d-inline pl-4"> GRAND TOTAL:</h6>{' '}
-                          GH&#x20B5; {item.grandTotal}.00
+                          GH&#x20B5; {item.grandTotal.toFixed(2)}
                           <br />
                           <h6 className="d-inline pl-4">
                             {' '}
@@ -541,12 +573,20 @@ function ManageProductsForSale(props) {
                   </>
                 ))}
               <div className="container">
-                <div className="row">
+                <div className="row mt-3">
                   <div className="col-md-12 text-center">
                     Remarks:<h6>All amounts only keep two decimal places</h6>
                   </div>
                 </div>
               </div>
+              {company &&
+                company.map((item) => (
+                  <p className="descreption" key={item._id}>
+                    <span className="lead" style={{ fontSize: '15px' }}>
+                      {item.description}
+                    </span>
+                  </p>
+                ))}
             </div>
             <div className="container">
               <div className="row">

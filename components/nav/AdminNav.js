@@ -67,9 +67,9 @@ const AdminNav = () => {
         </a>
       </Link>
 
-      <Link href="/admin/messages">
-        <a className={`nav-link  ${current === '/admin/messages' && 'active'}`}>
-          Messages
+      <Link href="/admin/settings">
+        <a className={`nav-link  ${current === '/admin/settings' && 'active'}`}>
+          Settings
         </a>
       </Link>
     </div>

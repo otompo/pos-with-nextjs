@@ -6,7 +6,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import Layout from '../../../components/layout/Layout';
 import Loader from '../../../components/layout/Loader';
 import UserRoute from '../../../components/routes/UserRoutes';
-import easyinvoice from 'easyinvoice';
 import ReactToPrint from 'react-to-print';
 import { Modal } from 'antd';
 
@@ -17,6 +16,7 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [tempData, setTempData] = useState([]);
+  const [company, setCompany] = useState([]);
 
   const showPrintData = (sale) => {
     let tempData = [sale];
@@ -40,8 +40,10 @@ const Index = () => {
   const handlePrint = () => {
     window.print();
   };
+
   useEffect(() => {
     showSales();
+    loadComapny();
   }, []);
 
   const showSales = async () => {
@@ -53,6 +55,18 @@ const Index = () => {
     } catch (err) {
       console.log(err);
       setLoading(false);
+    }
+  };
+
+  const loadComapny = async () => {
+    try {
+      // setLoading(true);
+      const { data } = await axios.get(`/api/admin/settings`);
+      setCompany(data);
+      // setLoading(false);
+    } catch (err) {
+      console.log(err);
+      // setLoading(false);
     }
   };
 
@@ -105,8 +119,8 @@ const Index = () => {
                   <h6 className="d-inline pl-4">Price:</h6> GH&#x20B5;
                   {product.discountPrice.toFixed(2)}{' '}
                   <h6 className="d-inline pl-2">Tax:</h6> GH&#x20B5;{' '}
-                  {product.tax}.00 <h6 className="d-inline pl-2">Quantity:</h6>{' '}
-                  {product.count}
+                  {product.tax.toFixed(2)}{' '}
+                  <h6 className="d-inline pl-2">Quantity:</h6> {product.count}
                   <br />
                 </span>
               ))}
@@ -114,9 +128,9 @@ const Index = () => {
           ),
 
           date: new Date(sale.createdAt).toLocaleString('en-US'),
-          subtotal: `GHS ${sale.subTotal}.00`,
-          totaltax: `GHS ${sale.totalTax}.00`,
-          grandtotal: `GHS ${sale.grandTotal}.00`,
+          subtotal: `GHS ${sale.subTotal.toFixed(2)}`,
+          totaltax: `GHS ${sale.totalTax.toFixed(2)}`,
+          grandtotal: `GHS ${sale.grandTotal.toFixed(2)}`,
           action: (
             <>
               <button
@@ -164,26 +178,43 @@ const Index = () => {
           width={700}
         >
           <div className="invoice__preview bg-white  rounded">
-            <div ref={componentRef} className="p-5">
+            <div ref={componentRef} className="p-5" id="invoice__preview">
+              {company &&
+                company.map((item) => (
+                  <p className="c_logo" key={item._id}>
+                    {item.logo ? (
+                      <Avatar size={90} src={item && item.logo} />
+                    ) : (
+                      <Avatar size={90} src={item && item.logoDefualt} />
+                    )}
+                  </p>
+                ))}
               <div className="container">
                 <div className="row">
                   <div className="col-md-12">
-                    <ul>
-                      <li>
-                        <h2>CODE SMART POS</h2>
-                      </li>
-                      <li>
-                        <h6 className="d-inline">Email:</h6> codesmart@gmail.com
-                      </li>
-                      <li>
-                        <h6 className="d-inline">Website:</h6>{' '}
-                        codesmartwebsoft.com
-                      </li>
-                      <li>
-                        <h6 className="d-inline">Address:</h6> Sunyani
-                        Baakoniaba Area One
-                      </li>
-                    </ul>
+                    {company &&
+                      company.map((item) => (
+                        <ul key={item.slug}>
+                          <li>
+                            <h2>{item.name}</h2>
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Email:</h6> {item.email}
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Website:</h6>{' '}
+                            {item.website}
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Contact:</h6>{' '}
+                            {item.contactNumber}
+                          </li>
+                          <li>
+                            <h6 className="d-inline">Address:</h6>{' '}
+                            {item.address}
+                          </li>
+                        </ul>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -277,12 +308,20 @@ const Index = () => {
                   </>
                 ))}
               <div className="container">
-                <div className="row">
+                <div className="row mt-3">
                   <div className="col-md-12 text-center">
                     Remarks:<h6>All amounts only keep two decimal places</h6>
                   </div>
                 </div>
               </div>
+              {company &&
+                company.map((item) => (
+                  <p className="descreption" key={item._id}>
+                    <span className="lead" style={{ fontSize: '15px' }}>
+                      {item.description}
+                    </span>
+                  </p>
+                ))}
             </div>
             <div className="container">
               <div className="row">
