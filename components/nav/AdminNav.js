@@ -56,6 +56,11 @@ const AdminNav = () => {
           Manage Dialy Sales
         </a>
       </Link>
+      <Link href="/admin/expenses">
+        <a className={`nav-link  ${current === '/admin/expenses' && 'active'}`}>
+          Manage Expenses
+        </a>
+      </Link>
 
       <Link href="/admin/manage-users">
         <a

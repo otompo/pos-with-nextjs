@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Loader from '../layout/Loader';
+import FormatCurrency from '../FormatCurrency';
 const { confirm } = Modal;
 
 const ManageProducts = () => {
@@ -384,8 +385,8 @@ const ManageProducts = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `GHS ${product.price}.00`,
-          discountPrice: `GHS ${product.discountPrice}.00`,
+          price: `${FormatCurrency(Number(product.price))}`,
+          discountPrice: `${FormatCurrency(product.discountPrice)}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
           discount: `${product.discount}`,
           tax: `${product.tax}`,

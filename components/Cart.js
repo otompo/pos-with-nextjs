@@ -19,7 +19,7 @@ function Cart({ item, dispatch, cart }) {
                     {item.count} X GH&#x20B5; {item.discountPrice}= GH&#x20B5;{' '}
                     {(item.count * item.discountPrice).toFixed(2)}
                   </p>
-                  <p>Tax: {item.tax}</p>
+                  <p>Tax: GH&#x20B5; {item.tax * item.count}</p>
                 </div>
                 <div className="col-md-5">
                   <div className="row">

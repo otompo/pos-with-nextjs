@@ -87,12 +87,13 @@ export const getSalesByUserLimit = catchAsync(async (req, res, next) => {
 // GET total sales for the selected day
 export const totalSalesForSelectedDay = catchAsync(async (req, res, next) => {
   // if date is provided
-
-  if (req.query.startdate && req.query.enddate) {
-    startDate = new Date(req.query.startdate);
+  const { salesStartDate, salesEndDate } = req.query;
+  // console.log(req.query);
+  if (salesStartDate && salesEndDate) {
+    startDate = new Date(salesStartDate);
     startDate.setHours(0, 0, 0, 0);
 
-    endDate = new Date(req.query.enddate);
+    endDate = new Date(salesEndDate);
     endDate.setHours(23, 59, 59, 999);
   } else {
     // beginning of current day

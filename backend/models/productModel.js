@@ -7,12 +7,12 @@ const productSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
     quantity: {
       type: Number,
-      require: true,
+      required: true,
       trim: true,
     },
     discount: {
@@ -37,12 +37,12 @@ const productSchema = mongoose.Schema(
     },
     expireDate: {
       type: Date,
-      require: true,
+      required: true,
       trim: true,
     },
     price: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
     imageDefualt: {

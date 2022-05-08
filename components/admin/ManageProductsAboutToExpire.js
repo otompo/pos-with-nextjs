@@ -108,8 +108,8 @@ const ManageProductsAboutToExpire = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `GHS ${product.price}.00`,
-          discountPrice: `GHS ${product.discountPrice}.00`,
+          price: `GH₵ ${product.price.toFixed(2)}`,
+          discountPrice: `GH₵ ${product.discountPrice.toFixed(2)}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
           discount: `${product.discount}`,
           tax: `${product.tax}`,

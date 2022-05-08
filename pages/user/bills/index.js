@@ -8,7 +8,8 @@ import Loader from '../../../components/layout/Loader';
 import UserRoute from '../../../components/routes/UserRoutes';
 import ReactToPrint from 'react-to-print';
 import { Modal } from 'antd';
-
+import FormatCurrency from '../../../components/FormatCurrency';
+import moment from 'moment';
 const { confirm } = Modal;
 
 const Index = () => {
@@ -79,7 +80,7 @@ const Index = () => {
           sort: 'asc',
         },
         {
-          label: 'Date',
+          label: 'Date Format: DD/MM/Y',
           field: 'date',
           sort: 'asc',
         },
@@ -127,10 +128,10 @@ const Index = () => {
             </span>
           ),
 
-          date: new Date(sale.createdAt).toLocaleString('en-US'),
-          subtotal: `GHS ${sale.subTotal.toFixed(2)}`,
-          totaltax: `GHS ${sale.totalTax.toFixed(2)}`,
-          grandtotal: `GHS ${sale.grandTotal.toFixed(2)}`,
+          date: moment(sale.createdAt).format('DD/MM/Y'),
+          subtotal: `${FormatCurrency(sale.subTotal)}`,
+          totaltax: `${FormatCurrency(sale.totalTax)}`,
+          grandtotal: `${FormatCurrency(sale.grandTotal)}`,
           action: (
             <>
               <button
@@ -292,7 +293,7 @@ const Index = () => {
                           <h6 className="d-inline pl-4">
                             {' '}
                             TAX:
-                          </h6> GH&#x20B5; {temp.totalTax}.00
+                          </h6> GH&#x20B5; {temp.totalTax}
                           <br />
                           <h6 className="d-inline pl-4"> GRAND TOTAL:</h6>{' '}
                           GH&#x20B5; {temp.grandTotal}.00

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { MDBDataTable } from 'mdbreact';
 import { getSession } from 'next-auth/client';
 import React, { useEffect, useState } from 'react';
+import FormatCurrency from '../../components/FormatCurrency';
 import Layout from '../../components/layout/Layout';
 import Loader from '../../components/layout/Loader';
 import UserRoute from '../../components/routes/UserRoutes';
@@ -92,10 +93,10 @@ const Index = () => {
           ),
 
           quantity: `${sale.quantitySold}`,
-          subtotal: `GHS ${sale.subTotal.toFixed(2)}`,
-          totaltax: `GHS ${sale.totalTax}.00`,
+          subtotal: `${FormatCurrency(sale.subTotal)}`,
+          totaltax: `${FormatCurrency(sale.totalTax)}`,
 
-          grandtotal: `GHS ${sale.grandTotal.toFixed(2)}`,
+          grandtotal: `${FormatCurrency(sale.grandTotal)}`,
         });
       });
 

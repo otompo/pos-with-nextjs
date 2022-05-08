@@ -13,6 +13,7 @@ import ReactToPrint from 'react-to-print';
 import { CartContext } from '../context/cartContext';
 import Cart from './Cart';
 import { addToCart } from '../actions/Actions';
+import FormatCurrency from './FormatCurrency';
 
 const { confirm } = Modal;
 
@@ -57,7 +58,7 @@ function ManageProductsForSale(props) {
 
     const getTaxTotal = () => {
       const res = cart.reduce((prev, item) => {
-        return prev + item.tax;
+        return prev + item.tax * item.count;
       }, 0);
 
       setTotalTax(res);
@@ -207,7 +208,7 @@ function ManageProductsForSale(props) {
           // price: `GHS ${
           //   product.discount ? product.discountPrice : product.price
           // }.00`,
-          price: `GHS ${product.discountPrice.toFixed(2)}`,
+          price: `${FormatCurrency(product.discountPrice)}`,
 
           // scan: (
           //   <QRCode
@@ -365,7 +366,7 @@ function ManageProductsForSale(props) {
                         <br />
                         Quantity: {item.count}
                         <br />
-                        Tax: {item.tax}
+                        Tax: GH&#x20B5; {item.tax * item.count}
                       </p>
                       <hr />
                     </div>
