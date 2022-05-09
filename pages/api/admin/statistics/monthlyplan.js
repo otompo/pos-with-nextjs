@@ -1,6 +1,6 @@
 import nc from 'next-connect';
 import dbConnect from '../../../../backend/config/dbConnect';
-import { getMonthlyPlan } from '../../../../backend/controllers/salesController';
+import { getMonthlyPlan } from '../../../../backend/controllers/statisticsController';
 import { isAdmin } from '../../../../backend/middlewares';
 import { isAuthenticatedUser } from '../../../../backend/middlewares/auth';
 

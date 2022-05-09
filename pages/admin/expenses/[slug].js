@@ -16,7 +16,7 @@ const EditExpense = () => {
     amount: '',
     date: '',
   });
-  var preData = moment(values.date).format('DD/MM/Y');
+  var preData = moment(values.date).format('MMM Do Y');
 
   const router = useRouter();
   const { slug } = router.query;
@@ -92,16 +92,16 @@ const EditExpense = () => {
                     />
                   </div>
                   <div className="form-group mb-4">
-                    <label>
+                    {/* <label>
                       <h6 className="d-inline">Format:</h6>
                       <p className="d-inline lead"> DD/MM/Y</p>
-                    </label>
+                    </label> */}
                     <DatePicker
                       className="w-100"
                       selected={expenseDate}
                       onChange={(date) => setExpenseDate(date)}
                       // minDate={new Date()}
-                      dateFormat="dd/MM/YYY"
+                      dateFormat="MMMM d, yyyy"
                       value={expenseDate ? expenseDate : preData}
                       isClearable
                       placeholderText="I have been cleared!"

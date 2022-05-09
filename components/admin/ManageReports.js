@@ -61,7 +61,10 @@ function ManageReports(props) {
 
   useEffect(() => {
     loadComapny();
+    handleExpensesSubmit();
+    handleSalesSubmit();
   }, []);
+
   const loadComapny = async () => {
     try {
       // setLoading(true);
@@ -103,6 +106,7 @@ function ManageReports(props) {
       console.log(err);
     }
   };
+
   const handleSubmitData = async () => {
     try {
       setLoading(true);
@@ -240,7 +244,7 @@ function ManageReports(props) {
                   selected={salesStartDate}
                   onChange={(date) => setSalesStartDate(date)}
                   // minDate={new Date()}
-                  dateFormat="dd/MM/YYY"
+                  dateFormat="MMMM d, yyyy"
                   isClearable
                   placeholderText="I have been cleared!"
                 />
@@ -251,7 +255,7 @@ function ManageReports(props) {
                   selected={salesEndDate}
                   onChange={(date) => setSalesEndDate(date)}
                   // minDate={new Date()}
-                  dateFormat="dd/MM/YYY"
+                  dateFormat="MMMM d, yyyy"
                   isClearable
                   placeholderText="I have been cleared!"
                 />
@@ -290,7 +294,7 @@ function ManageReports(props) {
                   selected={expensesStartDate}
                   onChange={(date) => setExpensesStartDate(date)}
                   // minDate={new Date()}
-                  dateFormat="dd/MM/YYY"
+                  dateFormat="MMMM d, yyyy"
                   isClearable
                   placeholderText="I have been cleared!"
                 />
@@ -301,7 +305,7 @@ function ManageReports(props) {
                   selected={expensesEndDate}
                   onChange={(date) => setExpensesEndDate(date)}
                   // minDate={new Date()}
-                  dateFormat="dd/MM/YYY"
+                  dateFormat="MMMM d, yyyy"
                   isClearable
                   placeholderText="I have been cleared!"
                 />

@@ -232,16 +232,16 @@ const ManageExpenses = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>
+                  {/* <label>
                     <h6 className="d-inline">Format:</h6>
                     <span className="d-inline">DD/MM/Y</span>
-                  </label>
+                  </label> */}
                   <DatePicker
                     className="w-100"
                     selected={expenseDate}
                     onChange={(date) => setExpenseDate(date)}
                     // minDate={new Date()}
-                    dateFormat="dd/MM/YYY"
+                    dateFormat="MMMM d, yyyy"
                     isClearable
                     placeholderText="I have been cleared!"
                   />

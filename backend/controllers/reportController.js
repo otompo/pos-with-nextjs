@@ -1,5 +1,4 @@
 import Report from '../models/reportsModel';
-import Expenses from '../models/expensesModel';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
 
