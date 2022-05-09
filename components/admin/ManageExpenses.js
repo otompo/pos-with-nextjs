@@ -133,7 +133,7 @@ const ManageExpenses = () => {
           sort: 'asc',
         },
         {
-          label: 'Date Format: DD/MM/Y',
+          label: 'Date',
           field: 'date',
           sort: 'asc',
         },
@@ -153,7 +153,7 @@ const ManageExpenses = () => {
           name: `${expense && expense.name}`,
           //   amount: `GH₵ ${expense && expense.amount.toFixed(2)}`,
           amount: `${FormatCurrency(expense.amount)}`,
-          date: `${moment(expense.date).format('DD/MM/Y')}`,
+          date: `${moment(expense.date).format('LL')}`,
 
           action: (
             <>
