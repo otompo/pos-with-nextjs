@@ -146,7 +146,7 @@ const ManageProductsExpired = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `GH₵ ${product.price.toFixed(2)}`,
+          price: `GH₵ ${Number(product.price).toFixed(2)}`,
           discountPrice: `GH₵ ${product.discountPrice.toFixed(2)}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
           discount: `${product.discount}`,

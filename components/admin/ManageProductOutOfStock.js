@@ -12,6 +12,7 @@ import Resizer from 'react-image-file-resizer';
 import Loader from '../layout/Loader';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import FormatCurrency from '../FormatCurrency';
 
 const { confirm } = Modal;
 
@@ -168,8 +169,8 @@ const ManageProductsOutOfStock = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `GHS ${product.price}.00`,
-          discountPrice: `GHS ${product.discountPrice}.00`,
+          price: `${FormatCurrency(Number(product.price))}`,
+          discountPrice: `${FormatCurrency(product.discountPrice)}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
           discount: `${product.discount}`,
           tax: `${product.tax}`,

@@ -10,6 +10,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Resizer from 'react-image-file-resizer';
 import Loader from '../layout/Loader';
+import FormatCurrency from '../FormatCurrency';
 
 const { confirm } = Modal;
 
@@ -108,8 +109,8 @@ const ManageProductsAboutToExpire = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `GH₵ ${product.price.toFixed(2)}`,
-          discountPrice: `GH₵ ${product.discountPrice.toFixed(2)}`,
+          price: `${FormatCurrency(Number(product.price))}`,
+          discountPrice: `${FormatCurrency(product.discountPrice)}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
           discount: `${product.discount}`,
           tax: `${product.tax}`,

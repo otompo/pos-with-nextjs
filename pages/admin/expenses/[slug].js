@@ -92,10 +92,6 @@ const EditExpense = () => {
                     />
                   </div>
                   <div className="form-group mb-4">
-                    {/* <label>
-                      <h6 className="d-inline">Format:</h6>
-                      <p className="d-inline lead"> DD/MM/Y</p>
-                    </label> */}
                     <DatePicker
                       className="w-100"
                       selected={expenseDate}

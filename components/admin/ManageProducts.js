@@ -611,6 +611,7 @@ const ManageProducts = () => {
                         selected={expireDate}
                         onChange={(date) => setExpireDate(date)}
                         minDate={new Date()}
+                        dateFormat="MMMM d, yyyy"
                         isClearable
                         placeholderText="I have been cleared!"
                       />

@@ -56,14 +56,17 @@ function ManageReports(props) {
   }, [totalSales, totalExpenses]);
 
   useEffect(() => {
-    getAllReports();
-  }, [success]);
+    loadComapny();
+  }, []);
 
   useEffect(() => {
-    loadComapny();
-    handleExpensesSubmit();
     handleSalesSubmit();
+    handleExpensesSubmit();
   }, []);
+
+  useEffect(() => {
+    getAllReports();
+  }, [success]);
 
   const loadComapny = async () => {
     try {
@@ -226,6 +229,7 @@ function ManageReports(props) {
 
     return data;
   };
+
   return (
     <Layout title="Manage Reports">
       <AdminRoute>

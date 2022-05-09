@@ -20,6 +20,7 @@ const ManageEditProduct = () => {
     quantity: '',
     batchId: '',
     tax: '',
+    expireDate: '',
     discount: '',
     loading: false,
   });
@@ -27,10 +28,11 @@ const ManageEditProduct = () => {
   const [uploadButtonText, setUploadButtonText] = useState(
     'Upload product Image',
   );
+  var preData = moment(values.expireDate).format('MMM Do Y');
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [ok, setOk] = useState(false);
-  const [expireDate, setExpireDate] = useState(new Date());
+  const [expireDate, setExpireDate] = useState(Date(preData).toDateString);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -89,7 +91,7 @@ const ManageEditProduct = () => {
         tax: values.tax,
         discount: values.discount,
         selectedCategory: checked,
-        // expireDate,
+        expireDate,
         // image,
         // discountPrice,
       });
@@ -276,18 +278,22 @@ const ManageEditProduct = () => {
                     required
                   />
                 </div>
-                {/* <div className="form-group">
+
+                <div className="form-group">
                   <DatePicker
                     className="w-100"
                     selected={expireDate}
-                    // placeholderText={values.expireDate}
                     onChange={(date) => setExpireDate(date)}
-                    minDate={new Date()}
-                    // dateFormat="MM/dd/yyyy h:mm aa"
+                    // minDate={new Date()}
+                    dateFormat="MMMM d, yyyy"
+                    value={expireDate ? expireDate : preData}
                     isClearable
                     placeholderText="I have been cleared!"
                   />
                 </div>
+
+                {/* 
+               
 
                 <div className="row">
                   <div className="col-md-8">
