@@ -155,7 +155,7 @@ export const getSalesForaParticulardate = catchAsync(async (req, res, next) => {
           docs,
         });
     },
-  );
+  ).sort({ dateTime: -1 });
 });
 
 export const getSalesChartInfo = catchAsync(async (req, res, next) => {

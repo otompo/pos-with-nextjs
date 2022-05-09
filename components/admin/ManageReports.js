@@ -201,7 +201,7 @@ function ManageReports(props) {
     reports &&
       reports.forEach((report, index) => {
         data.rows.push({
-          createdat: `${moment(report.createdAt).format('LT')}`,
+          createdat: `${moment(report.createdAt).format('LL')}`,
           salesstartdate: `${moment(report.salesStartDate).format('LL')}`,
           salesenddate: `${moment(report.salesEndDate).format('LL')}`,
           expensesstartdate: `${moment(report.expensesStartDate).format('LL')}`,

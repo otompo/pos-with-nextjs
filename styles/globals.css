@@ -233,7 +233,9 @@ h3 {
   margin-right: 154px !important;
   height: 37px;
 }
-
+#statistics .card {
+  height: 70%;
+}
 /* .ant-modal-mask {
   background-color: rgb(0 0 0 / 13%) !important;
 } */

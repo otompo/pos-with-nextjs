@@ -10,6 +10,6 @@ const handler = nc({ onError });
 dbConnect();
 
 // handler.get(getAllReviews);
-handler.get(getMonthlyPlan);
+handler.use(isAuthenticatedUser, isAdmin).get(getMonthlyPlan);
 
 export default handler;

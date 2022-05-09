@@ -15,18 +15,18 @@ function Cart({ item, dispatch, cart }) {
               <div className="row">
                 <div className="col-md-5">
                   <h6> {item.name}</h6>
-                  <p>
+                  {/* <p>
                     {item.count} X GH&#x20B5; {item.discountPrice}= GH&#x20B5;{' '}
                     {(item.count * item.discountPrice).toFixed(2)}
                   </p>
-                  <p>Tax: GH&#x20B5; {item.tax * item.count}</p>
+                  <p>Tax: GH&#x20B5; {item.tax * item.count}</p> */}
                 </div>
                 <div className="col-md-5">
                   <div className="row">
                     <div className="col-md-12">
                       <div className="stockCounter d-inline">
                         <button
-                          className="btn btn-outline-secondary"
+                          className="btn btn-secondary"
                           onClick={() => dispatch(decrease(cart, item._id))}
                           disabled={item.count === 1 ? true : false}
                         >
@@ -37,7 +37,7 @@ function Cart({ item, dispatch, cart }) {
                         <span className="px-3">{item.count}</span>
 
                         <button
-                          className="btn btn-outline-secondary"
+                          className="btn btn-primary"
                           onClick={() => dispatch(increase(cart, item._id))}
                           disabled={item.count === item.quantity ? true : false}
                         >

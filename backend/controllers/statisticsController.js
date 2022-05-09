@@ -1,6 +1,6 @@
 import Sales from '../models/salesModel';
 import Product from '../models/productModel';
-import Expenses from '../models/expensesModel';
+import Report from '../models/reportsModel';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
 
@@ -18,7 +18,7 @@ export const getMonthlyPlan = catchAsync(async (req, res, next) => {
         quantitySold: { $sum: '$quantitySold' },
       },
     },
-    { $sort: { _id: -1 } },
+    { $sort: { _id: 1 } },
   ]);
 
   const sales = await Sales.aggregate([
@@ -62,9 +62,35 @@ export const getMonthlyPlan = catchAsync(async (req, res, next) => {
     },
   ]);
 
+  const reports = await Report.aggregate([
+    {
+      $project: {
+        _id: 1,
+        yearSalesDate: { $year: '$salesStartDate' },
+        monthSalesDate: { $month: '$salesStartDate' },
+        totalSales: 1,
+        totalExpenses: 1,
+        profit: 1,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          yearSalesDate: '$yearSalesDate',
+          monthSalesDate: '$monthSalesDate',
+        },
+        totalSales: { $sum: '$totalSales' },
+        totalExpenses: { $sum: '$totalExpenses' },
+        profit: { $sum: '$profit' },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
   res.status(200).json({
     dailySales,
     sales,
     productStats,
+    reports,
   });
 });
