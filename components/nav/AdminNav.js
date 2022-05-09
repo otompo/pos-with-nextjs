@@ -35,18 +35,7 @@ const AdminNav = () => {
           Manage Prices
         </a>
       </Link> */}
-      <Link href="/admin/statistics">
-        <a
-          className={`nav-link  ${current === '/admin/statistics' && 'active'}`}
-        >
-          Manage Statistics
-        </a>
-      </Link>
-      <Link href="/admin/reports">
-        <a className={`nav-link  ${current === '/admin/reports' && 'active'}`}>
-          Manage Reports
-        </a>
-      </Link>
+
       <Link href="/admin/daily-sales">
         <a
           className={`nav-link  ${
@@ -59,6 +48,18 @@ const AdminNav = () => {
       <Link href="/admin/expenses">
         <a className={`nav-link  ${current === '/admin/expenses' && 'active'}`}>
           Manage Expenses
+        </a>
+      </Link>
+      <Link href="/admin/reports">
+        <a className={`nav-link  ${current === '/admin/reports' && 'active'}`}>
+          Manage Reports
+        </a>
+      </Link>
+      <Link href="/admin/statistics">
+        <a
+          className={`nav-link  ${current === '/admin/statistics' && 'active'}`}
+        >
+          Manage Statistics
         </a>
       </Link>
 

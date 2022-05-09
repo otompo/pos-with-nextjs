@@ -7,19 +7,21 @@ import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import { Button } from 'antd';
 import moment from 'moment';
+import { toast } from 'react-toastify';
 
 function ManageReports(props) {
   const [salesStartDate, setSalesStartDate] = useState(new Date());
   const [salesEndDate, setSalesEndDate] = useState(new Date());
-  const [totalSales, setTotalSales] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
-
   const [expensesStartDate, setExpensesStartDate] = useState(new Date());
   const [expensesEndDate, setExpensesEndDate] = useState(new Date());
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalExpenses, setTotalExpenses] = useState(0);
+  const [profit, setProfit] = useState(0);
+  console.log('profit', profit);
 
-  console.log('salesStartDate', salesStartDate);
-  console.log('salesEndDate', salesEndDate);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setProfit(totalSales - totalExpenses);
+  }, [totalSales, totalExpenses]);
 
   const handleSalesSubmit = async () => {
     try {
@@ -40,7 +42,7 @@ function ManageReports(props) {
   const handleExpensesSubmit = async () => {
     try {
       const { data } = await axios.get(
-        `/api/admin/reports/totalexpensesforadays?salesStartDate=${moment(
+        `/api/admin/expenses/totalexpensesforadays?salesStartDate=${moment(
           expensesStartDate,
         ).format('Y/MM/DD')}&salesEndDate=${moment(expensesEndDate).format(
           'Y/MM/DD',
@@ -51,7 +53,22 @@ function ManageReports(props) {
       console.log(err);
     }
   };
-
+  const handleSubmitData = async () => {
+    try {
+      const { data } = await axios.post(`/api/admin/reports`, {
+        salesStartDate,
+        salesEndDate,
+        expensesStartDate,
+        expensesEndDate,
+        totalSales,
+        totalExpenses,
+        profit,
+      });
+      toast.success('Success');
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <Layout title="Manage Reports">
       <AdminRoute>
@@ -60,46 +77,44 @@ function ManageReports(props) {
         <div className="row">
           <div className="col-md-6">
             <h4 className="lead text-center">
-              SELECT DATE RANGE FOR TOTAL SALES
+              SELECT START AND END DATE FOR TOTAL SALES
             </h4>
 
-            <form>
-              <div className="row">
-                <div className="col-md-5">
-                  <DatePicker
-                    className="w-100"
-                    selected={salesStartDate}
-                    onChange={(date) => setSalesStartDate(date)}
-                    // minDate={new Date()}
-                    dateFormat="dd/MM/YYY"
-                    isClearable
-                    placeholderText="I have been cleared!"
-                  />
-                </div>
-                <div className="col-md-5">
-                  <DatePicker
-                    className="w-100"
-                    selected={salesEndDate}
-                    onChange={(date) => setSalesEndDate(date)}
-                    // minDate={new Date()}
-                    dateFormat="dd/MM/YYY"
-                    isClearable
-                    placeholderText="I have been cleared!"
-                  />
-                </div>
-                <div className="col-md-2">
-                  <Button
-                    shape="round"
-                    type="primary"
-                    onClick={handleSalesSubmit}
-                  >
-                    Submit
-                  </Button>
-                </div>
+            <div className="row">
+              <div className="col-md-5">
+                <DatePicker
+                  className="w-100"
+                  selected={salesStartDate}
+                  onChange={(date) => setSalesStartDate(date)}
+                  // minDate={new Date()}
+                  dateFormat="dd/MM/YYY"
+                  isClearable
+                  placeholderText="I have been cleared!"
+                />
               </div>
-            </form>
+              <div className="col-md-5">
+                <DatePicker
+                  className="w-100"
+                  selected={salesEndDate}
+                  onChange={(date) => setSalesEndDate(date)}
+                  // minDate={new Date()}
+                  dateFormat="dd/MM/YYY"
+                  isClearable
+                  placeholderText="I have been cleared!"
+                />
+              </div>
+              <div className="col-md-2">
+                <Button
+                  shape="round"
+                  type="primary"
+                  onClick={handleSalesSubmit}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
 
-            <div className="card my-4 bg-success ">
+            <div className="card my-4 bg-success">
               <div className="card-body text-center">
                 <h4> TOTAL SALES</h4>
                 <div className="text-secondary">
@@ -113,7 +128,7 @@ function ManageReports(props) {
           </div>
           <div className="col-md-6">
             <h4 className="lead text-center">
-              SELECT DATE RANGE FOR TOTAL EXPENSES
+              SELECT START AND END DATE FOR TOTAL EXPENSES
             </h4>
             <div className="row">
               <div className="col-md-5">
@@ -161,7 +176,7 @@ function ManageReports(props) {
           </div>
           <div className="row">
             <div className="col-md-6">
-              <div className="card my-4 bg-info">
+              <div className="card my-4 bg-secondary">
                 <div className="card-body text-center">
                   <h4>PROFIT</h4>
                   <div className="text">
@@ -170,6 +185,20 @@ function ManageReports(props) {
                     </h2>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="col-md-6 text-center mt-5">
+              <h4 className="lead">CLICK ON BUTTON BELOW TO SAVE DATA</h4>
+              <div className="text">
+                <Button
+                  type="primary"
+                  size="large"
+                  shape="round"
+                  style={{ width: '50%' }}
+                  onClick={handleSubmitData}
+                >
+                  Save Data
+                </Button>
               </div>
             </div>
           </div>
