@@ -12,7 +12,7 @@ const handler = nc({ onError });
 
 dbConnect();
 
+handler.get(getCurrentCompany);
 handler.use(isAuthenticatedUser, isAdmin).post(createCompanyDetails);
-handler.use(isAuthenticatedUser, isAdmin).get(getCurrentCompany);
 
 export default handler;

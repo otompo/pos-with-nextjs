@@ -83,14 +83,28 @@ const ManageStatistics = () => {
           <div className="col-md-3">
             <div className="card my-4 bg-success">
               <div className="card-body text-center">
-                <h4>GRAND TOTAL QTY SOLD</h4>
+                <h4>TOTAL QTY</h4>
                 <div className="text">
-                  {grandTotalSales &&
-                    grandTotalSales.map((total, i) => (
+                  {products &&
+                    products.map((product, i) => (
                       <h2 className="text-white" key={i}>
-                        {total.quantitySold}
+                        {product.totalQuantity}
                       </h2>
                     ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="card my-4 bg-info">
+              <div className="card-body text-center">
+                <h4>TOTAL PRICE </h4>
+                <div className="text">
+                  {products.map((product, i) => (
+                    <h2 className="text-white" key={i}>
+                      {FormatCurrency(product.totalPrice)}
+                    </h2>
+                  ))}
                 </div>
               </div>
             </div>
@@ -105,20 +119,6 @@ const ManageStatistics = () => {
                       {FormatCurrency(
                         product.totalPrice * product.totalQuantity,
                       )}
-                    </h2>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="card my-4 bg-info">
-              <div className="card-body text-center">
-                <h4>GRAND TOTAL PRODUCTS QTY </h4>
-                <div className="text">
-                  {products.map((product, i) => (
-                    <h2 className="text-white" key={i}>
-                      {product.totalQuantity}
                     </h2>
                   ))}
                 </div>
