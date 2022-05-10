@@ -229,7 +229,7 @@ const Index = () => {
 
                     <li className="p-1 bg-gray-100">
                       <h6 className="d-inline">Receipt date:</h6>{' '}
-                      {new Date(temp.createdAt).toLocaleString('en-US')}
+                      {moment(temp.createdAt).format('LL')}
                     </li>
                     <li className="p-1 bg-gray-100">
                       <h6 className="d-inline">Receipt issued by:</h6>{' '}

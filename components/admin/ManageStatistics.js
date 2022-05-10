@@ -8,7 +8,6 @@ import Layout from '../layout/Layout';
 import FormatCurrency from '../FormatCurrency';
 
 const ManageStatistics = () => {
-  const [dailySales, setDailySales] = useState([]);
   const [grandTotalSales, setGrandTotalSales] = useState([]);
   const [products, setProducts] = useState([]);
   const [reports, setReports] = useState([]);
@@ -22,7 +21,6 @@ const ManageStatistics = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(`/api/admin/statistics/monthlyplan`);
-      setDailySales(data.dailySales);
       setGrandTotalSales(data.sales);
       setProducts(data.productStats);
       setReports(data.reports);
@@ -94,52 +92,6 @@ const ManageStatistics = () => {
                     </h2>
                   ))}
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-12">
-            <div className="card bg-secondary">
-              <div className="card-body">
-                <div className="card-title ">
-                  <h5 className="font-weight-bold text-center text-white">
-                    Daily Sales Chart
-                  </h5>
-                </div>
-                {loading ? (
-                  <Loader />
-                ) : (
-                  <Chart
-                    width="100%"
-                    height="400px"
-                    // chartType="Bar"
-                    // chartType="LineChart"
-                    // chartType="AreaChart"
-                    // chartType="PieChart"
-                    chartType="ColumnChart"
-                    loader={<div>Loading Chart.....</div>}
-                    data={[
-                      [
-                        'Date',
-                        'Sales',
-                        'Qty Sold',
-                        'Number Sold',
-                        // 'Max. Price',
-                        // 'Min. Price',
-                      ],
-                      ...dailySales.map((x) => [
-                        moment(x._id).format('LL'),
-                        x.totalSales,
-                        x.quantitySold,
-                        x.numOfSales,
-                        // x.maxPrice * 0.01,
-                        // x.minPrice * 0.01,
-                      ]),
-                    ]}
-                  ></Chart>
-                )}
               </div>
             </div>
           </div>

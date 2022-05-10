@@ -14,6 +14,7 @@ import { CartContext } from '../context/cartContext';
 import Cart from './Cart';
 import { addToCart } from '../actions/Actions';
 import FormatCurrency from './FormatCurrency';
+import moment from 'moment';
 
 const { confirm } = Modal;
 
@@ -491,7 +492,7 @@ function ManageProductsForSale(props) {
 
                     <li className="p-1 bg-gray-100">
                       <h6 className="d-inline">Receipt date:</h6>{' '}
-                      {new Date(item.createdAt).toLocaleString('en-US')}
+                      {moment(item.createdAt).format('LL')}
                     </li>
                     <li className="p-1 bg-gray-100">
                       <h6 className="d-inline">Receipt issued by:</h6>{' '}
