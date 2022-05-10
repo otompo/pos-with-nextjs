@@ -130,7 +130,7 @@ const ManageStatistics = () => {
             <div className="card">
               <div className="card-body">
                 <div className="card-title">
-                  <h5 className="font-weight-bold text-center text-white">
+                  <h5 className="font-weight-bold text-center">
                     Monthly Profit and Loss Chart
                   </h5>
                 </div>
