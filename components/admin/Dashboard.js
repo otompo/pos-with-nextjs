@@ -3,7 +3,7 @@ import { Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Card from './Card';
-import { Bar, Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import Loader from '../layout/Loader';
 import moment from 'moment';
 

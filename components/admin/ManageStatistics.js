@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Chart from 'react-google-charts';
 import axios from 'axios';
 import moment from 'moment';
 import AdminRoute from '../routes/AdminRoutes';
 import Loader from '../layout/Loader';
 import Layout from '../layout/Layout';
 import FormatCurrency from '../FormatCurrency';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 const ManageStatistics = () => {
   const [grandTotalSales, setGrandTotalSales] = useState([]);
@@ -153,44 +152,6 @@ const ManageStatistics = () => {
             </div>
           </div>
         </div>
-        {/* <div className="row my-2">
-          <div className="col-md-12">
-            <div className="card bg-secondary">
-              <div className="card-body">
-                <div className="card-title">
-                  <h5 className="font-weight-bold text-center text-white">
-                    Monthly Profit and Loss Chart
-                  </h5>
-                </div>
-                {loading ? (
-                  <Loader />
-                ) : (
-                  <Chart
-                    width="100%"
-                    height="400px"
-                    // chartType="Bar"
-                    // chartType="LineChart"
-                    // chartType="AreaChart"
-                    // chartType="PieChart"
-                    chartType="ColumnChart"
-                    loader={<div>Loading Chart.....</div>}
-                    data={[
-                      ['Date', 'Sales', 'Expenses', 'Profit'],
-                      ...reports.map((x) => [
-                        moment(x.monthSalesDate).format('MMMM Y'),
-                        x.totalSales,
-                        x.totalExpenses,
-                        x.profit,
-                        // x.maxPrice * 0.01,
-                        // x.minPrice * 0.01,
-                      ]),
-                    ]}
-                  ></Chart>
-                )}
-              </div>
-            </div>
-          </div>
-        </div> */}
 
         {/* <pre>{JSON.stringify(reports, null, 4)}</pre> */}
       </AdminRoute>
