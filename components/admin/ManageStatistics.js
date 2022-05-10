@@ -98,11 +98,13 @@ const ManageStatistics = () => {
           <div className="col-md-3">
             <div className="card my-4 bg-danger">
               <div className="card-body text-center">
-                <h4>GRAND TOTAL PRICES REMAINING</h4>
+                <h4>GRAND TOTAL AMOUNT</h4>
                 <div className="text">
                   {products.map((product, i) => (
                     <h2 className="text-white" key={i}>
-                      {FormatCurrency(product.totalPrice)}
+                      {FormatCurrency(
+                        product.totalPrice * product.totalQuantity,
+                      )}
                     </h2>
                   ))}
                 </div>
@@ -112,7 +114,7 @@ const ManageStatistics = () => {
           <div className="col-md-3">
             <div className="card my-4 bg-info">
               <div className="card-body text-center">
-                <h4>GRAND TOTAL QTY REMAINING</h4>
+                <h4>GRAND TOTAL PRODUCTS QTY </h4>
                 <div className="text">
                   {products.map((product, i) => (
                     <h2 className="text-white" key={i}>
