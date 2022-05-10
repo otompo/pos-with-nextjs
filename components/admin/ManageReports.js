@@ -16,8 +16,10 @@ const { confirm } = Modal;
 function ManageReports(props) {
   const [salesStartDate, setSalesStartDate] = useState(new Date());
   const [salesEndDate, setSalesEndDate] = useState(new Date());
+
   const [expensesStartDate, setExpensesStartDate] = useState(new Date());
   const [expensesEndDate, setExpensesEndDate] = useState(new Date());
+
   const [totalSales, setTotalSales] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [profit, setProfit] = useState(0);
@@ -98,9 +100,9 @@ function ManageReports(props) {
   const handleExpensesSubmit = async () => {
     try {
       const { data } = await axios.get(
-        `/api/admin/expenses/totalexpensesforadays?salesStartDate=${moment(
+        `/api/admin/expenses/totalexpensesforadays?expensesStartDate=${moment(
           expensesStartDate,
-        ).format('Y/MM/DD')}&salesEndDate=${moment(expensesEndDate).format(
+        ).format('Y/MM/DD')}&expensesEndDate=${moment(expensesEndDate).format(
           'Y/MM/DD',
         )}`,
       );

@@ -344,13 +344,7 @@ const ManageEditProduct = () => {
                 <div className="d-grid gap-2 my-2 ">
                   <button
                     className="btn btn-primary"
-                    disabled={
-                      !values.name ||
-                      !values.price ||
-                      !values.batchId ||
-                      !expireDate ||
-                      loading
-                    }
+                    disabled={loading}
                     type="submit"
                   >
                     {ok ? <Spin /> : 'Submit'}
