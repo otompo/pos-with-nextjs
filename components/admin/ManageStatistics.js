@@ -6,6 +6,7 @@ import AdminRoute from '../routes/AdminRoutes';
 import Loader from '../layout/Loader';
 import Layout from '../layout/Layout';
 import FormatCurrency from '../FormatCurrency';
+import { Bar, Line } from 'react-chartjs-2';
 
 const ManageStatistics = () => {
   const [grandTotalSales, setGrandTotalSales] = useState([]);
@@ -30,6 +31,34 @@ const ManageStatistics = () => {
       setLoading(false);
     }
   };
+
+  const lineChartData = {
+    labels: reports.map((x) => moment(x.monthSalesDate).format('MMMM Y')),
+    datasets: [
+      {
+        data: reports.map((x) => x.totalSales),
+        label: 'Sales',
+        backgroundColor: '#3333ff',
+        fill: true,
+        lineTension: 0.5,
+      },
+      {
+        data: reports.map((x) => x.totalExpenses),
+        label: 'Expenses',
+        backgroundColor: '#ff3333',
+        fill: true,
+        lineTension: 0.5,
+      },
+      {
+        data: reports.map((x) => x.profit),
+        label: 'Profit',
+        backgroundColor: '#F2CC59',
+        fill: true,
+        lineTension: 0.5,
+      },
+    ],
+  };
+
   return (
     <Layout title="Manage Statistics">
       <AdminRoute>
@@ -99,6 +128,33 @@ const ManageStatistics = () => {
 
         <div className="row my-2">
           <div className="col-md-12">
+            <div className="card">
+              <div className="card-body">
+                <div className="card-title">
+                  <h5 className="font-weight-bold text-center text-white">
+                    Monthly Profit and Loss Chart
+                  </h5>
+                </div>
+                {loading ? (
+                  <Loader />
+                ) : (
+                  <Bar
+                    height={90}
+                    options={{
+                      legend: {
+                        display: true,
+                        position: 'right',
+                      },
+                    }}
+                    data={lineChartData}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <div className="row my-2">
+          <div className="col-md-12">
             <div className="card bg-secondary">
               <div className="card-body">
                 <div className="card-title">
@@ -134,7 +190,7 @@ const ManageStatistics = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* <pre>{JSON.stringify(reports, null, 4)}</pre> */}
       </AdminRoute>
