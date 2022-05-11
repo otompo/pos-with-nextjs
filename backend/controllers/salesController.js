@@ -152,30 +152,28 @@ export const getSalesForaParticulardate = catchAsync(async (req, res, next) => {
       var result = {
         dateTime: startDate,
       };
-      if (docs) res.send(docs);
-      // if (docs) {
-      //   var grandTotal = docs.reduce(function (p, c) {
-      //     return p + c.grandTotal;
-      //   }, 0.0);
-      //   var quantitySold = docs.reduce(function (p, c) {
-      //     return p + c.quantitySold;
-      //   }, 0.0);
+      // if (docs) res.send(docs);
+      if (docs) {
+        var grandTotal = docs.reduce(function (p, c) {
+          return p + c.grandTotal;
+        }, 0.0);
+        var quantitySold = docs.reduce(function (p, c) {
+          return p + c.quantitySold;
+        }, 0.0);
 
-      //   result.grandTotal = parseFloat(parseFloat(grandTotal).toFixed(2));
-      //   result.quantitySold = quantitySold;
-      //   res.send({
-      //     total: docs.length,
-      //     result,
-      //     docs,
-      //   });
-      // } else {
-      //   result.grandTotal = 0;
-      //   res.send({
-      //     total: docs.length,
-      //     result,
-      //     docs,
-      //   });
-      // }
+        result.grandTotal = grandTotal;
+        result.quantitySold = quantitySold;
+        res.send({
+          result,
+          docs,
+        });
+      } else {
+        result.grandTotal = 0;
+        res.send({
+          result,
+          docs,
+        });
+      }
     },
   )
     .populate('saler', '_id name')
