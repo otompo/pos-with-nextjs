@@ -39,9 +39,9 @@ const ManageDailySales = () => {
           startdate,
         ).format('Y/MM/DD')}&enddate=${moment(enddate).format('Y/MM/DD')}`,
       );
-      setSales(data.docs);
-      setQuantitySold(data.result.quantitySold);
-      setTotalAmount(data.result.grandTotal);
+      setSales(data);
+      // setQuantitySold(data.result.quantitySold);
+      // setTotalAmount(data.result.grandTotal);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -157,24 +157,22 @@ const ManageDailySales = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-6 text-center">
+          {/* <div className="col-md-6 text-center">
             <div className="row">
               <div className="col-md-6">
                 <h6 className="d-inline text-uppercase">AMOUNT</h6>{' '}
                 <Avatar size={110} style={{ backgroundColor: '#87d068' }}>
-                  {/* <Badge count={totalSales && totalSales} showZero /> */}
                   {totalAmount && FormatCurrency(totalAmount)}
                 </Avatar>
               </div>
               <div className="col-md-6">
                 <h6 className="d-inline text-uppercase">QTY SOLD</h6>{' '}
                 <Avatar size={110} style={{ backgroundColor: '#87d068' }}>
-                  {/* <Badge count={totalSales && totalSales} showZero /> */}
                   {quantitySold && quantitySold}
                 </Avatar>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <hr />
         <div className="row">
