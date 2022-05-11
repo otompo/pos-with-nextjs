@@ -21,7 +21,7 @@ export const createCategory = catchAsync(async (req, res, next) => {
 
 // get all category
 export const getAllCategories = catchAsync(async (req, res, next) => {
-  const category = await Category.find({});
+  const category = await Category.find({}).sort({ createdAt: -1 });
   // if (!data) return res.status(400).send({ error: 'Categories not found' });
   res.status(200).send({
     total: category.length,

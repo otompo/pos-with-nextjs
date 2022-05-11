@@ -19,7 +19,8 @@ const ManageDailySales = () => {
   const [startdate, enddate] = dateRange;
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [totalSales, setTotalSales] = useState('');
+  const [quantitySold, setQuantitySold] = useState('');
+  const [totalAmount, setTotalAmount] = useState('');
 
   const onChange = (dates) => {
     const [start, end] = dates;
@@ -39,7 +40,8 @@ const ManageDailySales = () => {
         ).format('Y/MM/DD')}&enddate=${moment(enddate).format('Y/MM/DD')}`,
       );
       setSales(data.docs);
-      setTotalSales(data.total);
+      setQuantitySold(data.result.quantitySold);
+      setTotalAmount(data.result.grandTotal);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -125,13 +127,13 @@ const ManageDailySales = () => {
         <h1 className="lead">Manage Daily Sales</h1>
         <hr />
 
-        <div className="row">
-          <div className="col-md-8 offset-md-2 text-center">
-            <h4 className="lead">
+        <div className="row my-5">
+          <div className="col-md-6 text-center">
+            <h4 className="lead mb-4">
               SELECT START AND END DATE FOR SALES IN A DAY
             </h4>
-            <div className="row mt-5">
-              <div className="col-md-5">
+            <div className="row">
+              <div className="col-md-8">
                 <DatePicker
                   selectsRange={true}
                   className="w-100"
@@ -144,7 +146,7 @@ const ManageDailySales = () => {
                   isClearable={true}
                 />
               </div>
-              <div className="col-md-3">
+              <div className="col-md-4">
                 <Button
                   shape="round"
                   type="primary"
@@ -153,13 +155,22 @@ const ManageDailySales = () => {
                   Submit
                 </Button>
               </div>
-              <div className="col-md-4">
-                <h6 className="d-inline mr-2 text-uppercase">
-                  Number of Sales
-                </h6>{' '}
-                <Avatar size={50} style={{ backgroundColor: '#87d068' }}>
+            </div>
+          </div>
+          <div className="col-md-6 text-center">
+            <div className="row">
+              <div className="col-md-6">
+                <h6 className="d-inline text-uppercase">AMOUNT</h6>{' '}
+                <Avatar size={110} style={{ backgroundColor: '#87d068' }}>
                   {/* <Badge count={totalSales && totalSales} showZero /> */}
-                  {totalSales && totalSales}
+                  {totalAmount && FormatCurrency(totalAmount)}
+                </Avatar>
+              </div>
+              <div className="col-md-6">
+                <h6 className="d-inline text-uppercase">QTY SOLD</h6>{' '}
+                <Avatar size={110} style={{ backgroundColor: '#87d068' }}>
+                  {/* <Badge count={totalSales && totalSales} showZero /> */}
+                  {quantitySold && quantitySold}
                 </Avatar>
               </div>
             </div>

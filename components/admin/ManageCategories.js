@@ -141,7 +141,7 @@ const ManageCategories = () => {
                   <span onClick={() => handleDelete(index)}>
                     <DeleteOutlined
                       className="text-danger d-flex justify-content-center "
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', fontSize: '25px' }}
                       size={95}
                     />
                   </span>

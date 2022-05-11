@@ -149,13 +149,36 @@ export const getSalesForaParticulardate = catchAsync(async (req, res, next) => {
   Sales.find(
     { dateTime: { $gte: startDate.toJSON(), $lte: endDate.toJSON() } },
     function (err, docs) {
-      if (docs)
+      var result = {
+        dateTime: startDate,
+      };
+      if (docs) {
+        var grandTotal = docs.reduce(function (p, c) {
+          return p + c.grandTotal;
+        }, 0.0);
+        var quantitySold = docs.reduce(function (p, c) {
+          return p + c.quantitySold;
+        }, 0.0);
+
+        result.grandTotal = parseFloat(parseFloat(grandTotal).toFixed(2));
+        result.quantitySold = quantitySold;
         res.send({
           total: docs.length,
+          result,
           docs,
         });
+      } else {
+        result.grandTotal = 0;
+        res.send({
+          total: docs.length,
+          result,
+          docs,
+        });
+      }
     },
-  ).sort({ dateTime: -1 });
+  )
+    .populate('saler', '_id name')
+    .sort({ dateTime: -1 });
 });
 
 export const getSalesChartInfo = catchAsync(async (req, res, next) => {

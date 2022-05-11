@@ -93,7 +93,7 @@ export const getProductAboutToOutofStock = catchAsync(
   async (req, res, next) => {
     const products = await Product.find({
       $and: [
-        { $expr: { $lte: [{ $toDouble: '$quantity' }, 100] } },
+        { $expr: { $lte: [{ $toDouble: '$quantity' }, 50] } },
         { $expr: { $gte: [{ $toDouble: '$quantity' }, 30] } },
       ],
     })
