@@ -126,11 +126,11 @@ const ManageProductsExpired = () => {
           sort: 'asc',
         },
 
-        {
-          label: 'Action',
-          field: 'action',
-          sort: 'asc',
-        },
+        // {
+        //   label: 'Action',
+        //   field: 'action',
+        //   sort: 'asc',
+        // },
       ],
       rows: [],
     };
@@ -153,33 +153,22 @@ const ManageProductsExpired = () => {
           tax: `${product.tax}`,
           createdat: `${moment(product.createdAt).fromNow()}`,
 
-          action: (
-            <>
-              <div className="container">
-                <div className="row">
-                  {/* <div className="col-md-8 offset-md-2">
-                    <span
-                      onClick={() => handleDelete(index)}
-                      // className="pt-1 pl-3"
-                    >
-                      <EditOutlined
-                        className="text-success d-flex justify-content-center"
-                        style={{ cursor: 'pointer', fontSize: 30 }}
-                      />
-                    </span>
-                  </div> */}
-                  <div className="col-md-8 offset-md-2">
-                    <span onClick={() => handleDelete(index)}>
-                      <DeleteOutlined
-                        className="text-danger d-flex justify-content-center"
-                        style={{ cursor: 'pointer', fontSize: 30 }}
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
-          ),
+          // action: (
+          //   <>
+          //     <div className="container">
+          //       <div className="row">
+          //         <div className="col-md-8 offset-md-2">
+          //           <span onClick={() => handleDelete(index)}>
+          //             <DeleteOutlined
+          //               className="text-danger d-flex justify-content-center"
+          //               style={{ cursor: 'pointer', fontSize: 30 }}
+          //             />
+          //           </span>
+          //         </div>
+          //       </div>
+          //     </div>
+          //   </>
+          // ),
         });
       });
 

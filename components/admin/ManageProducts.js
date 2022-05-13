@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MDBDataTable } from 'mdbreact';
-import { Avatar, Spin, Modal, Progress, Badge, Button } from 'antd';
+import { Avatar, Spin, Modal, Progress, Badge, Button, Tooltip } from 'antd';
 import download from 'downloadjs';
 import Link from 'next/link';
 import {
@@ -10,6 +10,7 @@ import {
   SyncOutlined,
   ExclamationCircleOutlined,
   UploadOutlined,
+  RedoOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import moment from 'moment';
@@ -53,7 +54,10 @@ const ManageProducts = () => {
   const [totalOutOfStock, setTotalOutOfStock] = useState('');
   const [totalAboutToExpire, setTotalAboutToExpire] = useState('');
   const [totalExpire, setTotalExpire] = useState('');
-  const [discountPrice, setDiscountPrice] = useState('');
+  const [tempData, setTempData] = useState([]);
+  const [actionTriggered, setActionTriggered] = useState('');
+  const [quantity, setQuantity] = useState('');
+  let currentQty = tempData[1];
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -79,7 +83,6 @@ const ManageProducts = () => {
     loadTotalOutOfStock();
     loadTotalAboutToExpire();
     loadTotalExpired();
-    // setDiscountPrice(values.price - (values.price * values.discount) / 100);
   }, [success]);
 
   const loadTotalInStock = async () => {
@@ -311,6 +314,36 @@ const ManageProducts = () => {
     }
   };
 
+  const loadEditQtyData = (name, slug, quantity) => {
+    let tempData = [name, quantity, slug];
+    setTempData((item) => [...tempData]);
+    // console.log(tempData);
+    return showModal();
+  };
+
+  const handleQuantitySubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setSuccess(true);
+      const { data } = await axios.put(
+        `/api/admin/products/outofstock/update/${tempData[2]}`,
+        {
+          quantity,
+          currentQty,
+        },
+      );
+      toast.success('Success');
+      setQuantity('');
+      setSuccess(false);
+      setIsModalVisible(false);
+    } catch (err) {
+      toast.error(err.response.data);
+      setSuccess(false);
+      setQuantity('');
+    }
+  };
+
   const setData = () => {
     const data = {
       columns: [
@@ -396,26 +429,50 @@ const ManageProducts = () => {
             <>
               <div className="container">
                 <div className="row">
-                  <div className="col-md-6">
-                    <Link href={`/admin/products/${product.slug}`}>
-                      <a>
-                        <EditOutlined
-                          className="text-success d-flex justify-content-center"
-                          style={{ cursor: 'pointer', fontSize: 20 }}
+                  <Tooltip title={`Edit ${product.name}`} color="green">
+                    <div className="col-md-4">
+                      <Link href={`/admin/products/${product.slug}`}>
+                        <a>
+                          <EditOutlined
+                            className="text-success d-flex justify-content-center"
+                            style={{ cursor: 'pointer', fontSize: 25 }}
+                          />
+                        </a>
+                      </Link>
+                    </div>
+                  </Tooltip>
+                  <div className="col-md-4">
+                    <Tooltip title={`Restock ${product.name}`} color="blue">
+                      <span
+                        onClick={() => {
+                          loadEditQtyData(
+                            product.name,
+                            product.slug,
+                            product.quantity,
+                          );
+                          setActionTriggered('ACTION_2');
+                        }}
+                        // className="pt-1 pl-3"
+                      >
+                        <RedoOutlined
+                          className="text-primary d-flex justify-content-center"
+                          style={{ cursor: 'pointer', fontSize: 25 }}
                         />
-                      </a>
-                    </Link>
+                      </span>
+                    </Tooltip>
                   </div>
-                  <div className="col-md-6">
-                    <span
-                      onClick={() => handleDelete(index)}
-                      // className="pt-1 pl-3"
-                    >
-                      <DeleteOutlined
-                        className="text-danger d-flex justify-content-center"
-                        style={{ cursor: 'pointer', fontSize: 20 }}
-                      />
-                    </span>
+                  <div className="col-md-4">
+                    <Tooltip title={`Delete ${product.name}`} color="red">
+                      <span
+                        onClick={() => handleDelete(index)}
+                        // className="pt-1 pl-3"
+                      >
+                        <DeleteOutlined
+                          className="text-danger d-flex justify-content-center"
+                          style={{ cursor: 'pointer', fontSize: 25 }}
+                        />
+                      </span>
+                    </Tooltip>
                   </div>
                 </div>
               </div>
@@ -502,7 +559,7 @@ const ManageProducts = () => {
                     </button>
                   </form> */}
 
-                  <Button
+                  {/* <Button
                     type="primary"
                     shape="round"
                     file="csv"
@@ -512,7 +569,7 @@ const ManageProducts = () => {
                     }}
                   >
                     IMPORT CSV FILE
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>
@@ -520,202 +577,250 @@ const ManageProducts = () => {
             <div className="col-md-2">
               <p
                 className="btn text-white float-right btn-success mt-2"
-                onClick={showModal}
+                onClick={() => {
+                  setIsModalVisible(true);
+                  setActionTriggered('ACTION_1');
+                }}
               >
                 {' '}
                 Add Product
               </p>
             </div>
             <Modal
-              title="Add Product"
+              title={
+                actionTriggered == 'ACTION_1' ? (
+                  <span>Add Product</span>
+                ) : (
+                  <>
+                    {' '}
+                    <span>Restock {tempData[0]} Quantity</span>
+                    <br />
+                    <span className="lead">
+                      Current Quantity is {tempData[1]}
+                    </span>
+                  </>
+                )
+              }
               visible={isModalVisible}
               onOk={handleOk}
               onCancel={handleCancel}
               footer={null}
-              width={900}
+              width={actionTriggered == 'ACTION_1' ? 900 : 500}
             >
-              <div className="row">
-                <div className="col-md-6">
-                  <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        name="name"
-                        value={values.name}
-                        onChange={handleChange}
-                        className="form-control mb-4 p-2"
-                        placeholder="Enter name"
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        name="quantity"
-                        value={values.quantity}
-                        onChange={handleChange}
-                        className="form-control mb-4 p-2"
-                        placeholder="Enter quantity"
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        name="price"
-                        value={values.price}
-                        onChange={handleChange}
-                        className="form-control mb-4 p-2"
-                        placeholder="Enter price"
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        type="number"
-                        name="discount"
-                        value={values.discount}
-                        onChange={handleChange}
-                        className="form-control mb-4 p-2"
-                        placeholder="Enter product discount  %"
-                        required
-                        min={0}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        type="number"
-                        name="tax"
-                        value={values.tax}
-                        onChange={handleChange}
-                        className="form-control mb-4 p-2"
-                        placeholder="Enter product tax"
-                        required
-                        min={0}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        name="batchId"
-                        value={values.batchId}
-                        onChange={handleChange}
-                        className="form-control mb-4 p-2"
-                        placeholder="Enter batch number"
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <DatePicker
-                        className="w-100"
-                        selected={expireDate}
-                        onChange={(date) => setExpireDate(date)}
-                        minDate={new Date()}
-                        dateFormat="MMMM d, yyyy"
-                        isClearable
-                        placeholderText="I have been cleared!"
-                      />
+              {actionTriggered == 'ACTION_1' ? (
+                <div className="row">
+                  <div className="col-md-6">
+                    <form onSubmit={handleSubmit}>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          name="name"
+                          value={values.name}
+                          onChange={handleChange}
+                          className="form-control mb-4 p-2"
+                          placeholder="Enter name"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          name="quantity"
+                          value={values.quantity}
+                          onChange={handleChange}
+                          className="form-control mb-4 p-2"
+                          placeholder="Enter quantity"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          name="price"
+                          value={values.price}
+                          onChange={handleChange}
+                          className="form-control mb-4 p-2"
+                          placeholder="Enter price"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="number"
+                          name="discount"
+                          value={values.discount}
+                          onChange={handleChange}
+                          className="form-control mb-4 p-2"
+                          placeholder="Enter product discount  %"
+                          required
+                          min={0}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="number"
+                          name="tax"
+                          value={values.tax}
+                          onChange={handleChange}
+                          className="form-control mb-4 p-2"
+                          placeholder="Enter product tax"
+                          required
+                          min={0}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          name="batchId"
+                          value={values.batchId}
+                          onChange={handleChange}
+                          className="form-control mb-4 p-2"
+                          placeholder="Enter batch number"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <DatePicker
+                          className="w-100"
+                          selected={expireDate}
+                          onChange={(date) => setExpireDate(date)}
+                          minDate={new Date()}
+                          dateFormat="MMMM d, yyyy"
+                          isClearable
+                          placeholderText="I have been cleared!"
+                        />
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="btn btn-dark btn-block text-left mt-3 text-center">
+                              {loading ? (
+                                <span className="spinLoader">
+                                  <Spin />
+                                </span>
+                              ) : (
+                                `${uploadButtonText}`
+                              )}
+
+                              <input
+                                type="file"
+                                name="image"
+                                size="large"
+                                onChange={handleImage}
+                                accept="image/*"
+                                hidden
+                              />
+                            </label>
+                          </div>
+                        </div>
+                        <div className="col-md-4 offset-md-2">
+                          <div className="form-group mt-3">
+                            {imagePreview ? (
+                              <Avatar size={40} src={imagePreview} />
+                            ) : (
+                              <Avatar size={40} src="/img/preview.ico" />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        {progress > 0 && (
+                          <Progress
+                            className="d-flex justify-content-center pt-2"
+                            percent={progress}
+                            steps={10}
+                          />
+                        )}
+                      </div>
+
+                      {/* <div className="form-group">
+                        <textarea
+                          rows="7"
+                          name="description"
+                          style={{ width: '100%' }}
+                          value={values.description}
+                          onChange={handleChange}
+                        ></textarea>
+                      </div> */}
+
+                      <div className="d-grid gap-2 my-2 ">
+                        <button
+                          className="btn btn-primary"
+                          disabled={
+                            !values.name ||
+                            !values.price ||
+                            !values.batchId ||
+                            !values.discount ||
+                            !values.tax ||
+                            !expireDate ||
+                            loading
+                          }
+                          type="submit"
+                        >
+                          {ok ? <SyncOutlined spin /> : 'Submit'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                  <div className="col-md-6">
+                    <h1 className="lead  ml-5">Categories</h1>
+                    <hr />
+                    <div className="row">
+                      <div className="col-md-12">
+                        <ul>{showCategories()}</ul>
+                      </div>
+                      {/* <div className="col-md-6">
+                        <ul>{showCategoriesS()}</ul>
+                      </div> */}
                     </div>
 
+                    <hr />
                     <div className="row">
                       <div className="col-md-6">
-                        <div className="form-group">
-                          <label className="btn btn-dark btn-block text-left mt-3 text-center">
-                            {loading ? (
-                              <span className="spinLoader">
-                                <Spin />
-                              </span>
-                            ) : (
-                              `${uploadButtonText}`
-                            )}
-
-                            <input
-                              type="file"
-                              name="image"
-                              size="large"
-                              onChange={handleImage}
-                              accept="image/*"
-                              hidden
-                            />
-                          </label>
-                        </div>
+                        <h1 className="lead">Discount Price </h1>
                       </div>
-                      <div className="col-md-4 offset-md-2">
-                        <div className="form-group mt-3">
-                          {imagePreview ? (
-                            <Avatar size={40} src={imagePreview} />
-                          ) : (
-                            <Avatar size={40} src="/img/preview.ico" />
-                          )}
-                        </div>
+                      <div className="col-md-6">
+                        <h4>
+                          GH&#x20B5;
+                          {values.price -
+                            (values.price * values.discount) / 100}
+                          .00
+                        </h4>
                       </div>
                     </div>
-                    <div className="form-group">
-                      {progress > 0 && (
-                        <Progress
-                          className="d-flex justify-content-center pt-2"
-                          percent={progress}
-                          steps={10}
+                  </div>
+                </div>
+              ) : (
+                <div className="row">
+                  <div className="col-md-12">
+                    <form onSubmit={handleQuantitySubmit}>
+                      <div className="form-group">
+                        <input
+                          type="number"
+                          // name="quantity"
+                          value={quantity}
+                          onChange={(e) => setQuantity(e.target.value)}
+                          className="form-control mb-4 p-2"
+                          placeholder="Enter quantity"
+                          required
                         />
-                      )}
-                    </div>
+                      </div>
 
-                    {/* <div className="form-group">
-                      <textarea
-                        rows="7"
-                        name="description"
-                        style={{ width: '100%' }}
-                        value={values.description}
-                        onChange={handleChange}
-                      ></textarea>
-                    </div> */}
-
-                    <div className="d-grid gap-2 my-2 ">
-                      <button
-                        className="btn btn-primary"
-                        disabled={
-                          !values.name ||
-                          !values.price ||
-                          !values.batchId ||
-                          !values.discount ||
-                          !values.tax ||
-                          !expireDate ||
-                          loading
-                        }
-                        type="submit"
-                      >
-                        {ok ? <SyncOutlined spin /> : 'Submit'}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-                <div className="col-md-6">
-                  <h1 className="lead  ml-5">Categories</h1>
-                  <hr />
-                  <div className="row">
-                    <div className="col-md-12">
-                      <ul>{showCategories()}</ul>
-                    </div>
-                    {/* <div className="col-md-6">
-                      <ul>{showCategoriesS()}</ul>
-                    </div> */}
-                  </div>
-
-                  <hr />
-                  <div className="row">
-                    <div className="col-md-6">
-                      <h1 className="lead">Discount Price </h1>
-                    </div>
-                    <div className="col-md-6">
-                      <h4>
-                        GH&#x20B5;
-                        {values.price - (values.price * values.discount) / 100}
-                        .00
-                      </h4>
-                    </div>
+                      <div className="d-grid gap-2 my-2 ">
+                        <button
+                          className="btn btn-primary"
+                          // disabled={!values.name || loading}
+                          type="submit"
+                        >
+                          {/* {ok ? <SyncOutlined spin /> : 'Submit'} */}
+                          Update
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
-              </div>
+              )}
             </Modal>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Avatar } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { RedoOutlined } from '@ant-design/icons';
 import AdminRoute from '../routes/AdminRoutes';
 import { MDBDataTable } from 'mdbreact';
 import Layout from '../layout/Layout';
@@ -179,8 +179,8 @@ const ManageProductsAboutOutOfStock = () => {
                       className="pt-1 pl-3"
                     >
                       {/* <Link></Link> */}
-                      <EditOutlined
-                        className="text-success d-flex justify-content-center"
+                      <RedoOutlined
+                        className="text-primary d-flex justify-content-center"
                         style={{ cursor: 'pointer', fontSize: 30 }}
                       />
                     </span>

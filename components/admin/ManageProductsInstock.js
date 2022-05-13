@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spin, Modal, Avatar, Image } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { RedoOutlined } from '@ant-design/icons';
 import AdminRoute from '../routes/AdminRoutes';
 import { MDBDataTable } from 'mdbreact';
 import Layout from '../layout/Layout';
@@ -51,7 +51,6 @@ const ManageProductsInstock = () => {
   const loadModalData = (name, slug, quantity) => {
     let tempData = [name, quantity, slug];
     setTempData((item) => [...tempData]);
-
     // console.log(tempData);
     return showModal();
   };
@@ -178,9 +177,9 @@ const ManageProductsInstock = () => {
                       className="pt-1 pl-3"
                     >
                       {/* <Link></Link> */}
-                      <EditOutlined
-                        className="text-success d-flex justify-content-center"
-                        style={{ cursor: 'pointer', fontSize: 30 }}
+                      <RedoOutlined
+                        className="text-primary d-flex justify-content-center"
+                        style={{ cursor: 'pointer', fontSize: 25 }}
                       />
                     </span>
                   </div>
@@ -204,6 +203,7 @@ const ManageProductsInstock = () => {
 
     return data;
   };
+
   return (
     <Layout title="Manage Products Instock">
       <AdminRoute>
