@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import AdminRoute from '../routes/AdminRoutes';
 import Layout from '../layout/Layout';
 import moment from 'moment';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { PrinterOutlined } from '@ant-design/icons';
 import Loader from '../layout/Loader';
-import { Button, Modal, Spin, Avatar, Badge } from 'antd';
+import { Button, Modal, Avatar } from 'antd';
 import ReactToPrint from 'react-to-print';
 import FormatCurrency from '../FormatCurrency';
 import DatePicker from 'react-datepicker';
@@ -21,6 +22,29 @@ const ManageDailySales = () => {
   const [loading, setLoading] = useState(false);
   const [quantitySold, setQuantitySold] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showPrintData = () => {
+    return showModal();
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const componentRef = useRef();
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   const onChange = (dates) => {
     const [start, end] = dates;
@@ -31,6 +55,7 @@ const ManageDailySales = () => {
   useEffect(() => {
     handleSalesSubmit();
   }, []);
+
   const handleSalesSubmit = async () => {
     try {
       setLoading(true);
@@ -121,10 +146,20 @@ const ManageDailySales = () => {
 
     return data;
   };
+
   return (
     <Layout title="Manage Daily Sales">
       <AdminRoute>
-        <h1 className="lead">Manage Daily Sales</h1>
+        <div className="row my-3">
+          <div className="col-md-10">
+            <h1 className="lead">Manage Manage Daily Sales</h1>
+          </div>
+          <div className="col-md-2">
+            <button className="btn btn-danger mx-2" onClick={showPrintData}>
+              <PrinterOutlined style={{ fontSize: 25 }} />
+            </button>
+          </div>
+        </div>
         <hr />
 
         <div className="row my-5">
@@ -190,8 +225,88 @@ const ManageDailySales = () => {
             )}
           </div>
         </div>
-        {/* <pre>{JSON.stringify(totalSales, null, 4)}</pre>
-        <pre>{JSON.stringify(sales, null, 4)}</pre> */}
+        <Modal
+          title="LIST OF SALES SELECTED"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer={null}
+          width={700}
+        >
+          <div className="invoice__preview bg-white  rounded">
+            <div ref={componentRef} className="p-5" id="invoice__preview">
+              <h5 className="text-uppercase">
+                LIST OF SALES FROM{' '}
+                <span className="text-primary">
+                  {moment(startdate).format('LL')} TO{' '}
+                  {moment(enddate).format('LL')}
+                </span>
+              </h5>
+              <hr />
+              <h5 className="text-uppercase">
+                TOTAL AMOUNT OF SALES:{' '}
+                <span className="text-primary">
+                  {totalAmount && FormatCurrency(totalAmount)}
+                </span>
+              </h5>
+              <hr />
+              <table width="100%" className="mb-10 table table-striped">
+                <thead>
+                  <tr className="bg-gray-100 p-1">
+                    <td className="font-bold">Image</td>
+                    <td className="font-bold">Name</td>
+                    <td className="font-bold">Price</td>
+                    <td className="font-bold">Quantity Sold</td>
+                    <td className="font-bold">Tax</td>
+                    <td className="font-bold">Amount</td>
+                  </tr>
+                </thead>
+                {sales &&
+                  sales.map((sale, i) => (
+                    <>
+                      {sale.products.map((product) => (
+                        <tbody>
+                          <tr>
+                            <td>
+                              <Avatar
+                                size={30}
+                                src={product && product.imagePath}
+                              />
+                            </td>
+                            <td>{product.name}</td>
+                            <td> {FormatCurrency(product.discountPrice)}</td>
+                            <td> {product.count}</td>
+                            <td> {product.count * product.tax}</td>
+                            <td>
+                              {' '}
+                              {FormatCurrency(
+                                product.discountPrice * product.count +
+                                  product.tax,
+                              )}
+                            </td>
+                          </tr>
+                        </tbody>
+                      ))}
+                    </>
+                  ))}
+              </table>
+            </div>
+            <div className="container">
+              <div className="row">
+                <div className="col-md-4 offset-md-4">
+                  <ReactToPrint
+                    trigger={() => (
+                      <button className="btn btn-primary float-right">
+                        Print / Download
+                      </button>
+                    )}
+                    content={() => componentRef.current}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
       </AdminRoute>
     </Layout>
   );

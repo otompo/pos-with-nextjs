@@ -1,25 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { Spin, Modal, Avatar, Image } from 'antd';
+import React, { useRef, useEffect, useState } from 'react';
+import { Modal, Avatar } from 'antd';
 import {
   EditOutlined,
-  DeleteOutlined,
+  PrinterOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import AdminRoute from '../routes/AdminRoutes';
 import { MDBDataTable } from 'mdbreact';
 import Layout from '../layout/Layout';
 import moment from 'moment';
-import TextTruncate from 'react-text-truncate';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import Resizer from 'react-image-file-resizer';
 import Loader from '../layout/Loader';
+import ReactToPrint from 'react-to-print';
 
 const { confirm } = Modal;
 
 const ManageProductsExpired = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showPrintData = () => {
+    return showModal();
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const componentRef = useRef();
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   useEffect(() => {
     loadProductsExpired();
   }, []);
@@ -177,7 +200,16 @@ const ManageProductsExpired = () => {
   return (
     <Layout title="Manage Products Expired">
       <AdminRoute>
-        <h1 className="lead">Manage Products Expired</h1>
+        <div className="row my-3">
+          <div className="col-md-10">
+            <h1 className="lead">Manage Products Expired</h1>
+          </div>
+          <div className="col-md-2">
+            <button className="btn btn-danger mx-2" onClick={showPrintData}>
+              <PrinterOutlined style={{ fontSize: 25 }} />
+            </button>
+          </div>
+        </div>
         <hr />
         {loading ? (
           <Loader />
@@ -190,6 +222,63 @@ const ManageProductsExpired = () => {
             hover
           />
         )}
+        <Modal
+          title="EXPIRED PRODUCTS"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer={null}
+          width={700}
+        >
+          <div className="invoice__preview bg-white  rounded">
+            <div ref={componentRef} className="p-5" id="invoice__preview">
+              <h5>LIST OF EXPIRED PRODUCTS</h5>
+              <hr />
+              <table width="100%" className="mb-10 table table-striped">
+                <thead>
+                  <tr className="bg-gray-100 p-1">
+                    <td className="font-bold">Image</td>
+                    <td className="font-bold">Name</td>
+                    <td className="font-bold">Expired Date</td>
+                    <td className="font-bold">Category</td>
+                  </tr>
+                </thead>
+                {products.map((product) => (
+                  <tbody key={product._id}>
+                    <tr className="h-10">
+                      <td>
+                        {' '}
+                        <Avatar size={30} src={product && product.imagePath} />
+                      </td>
+                      <td>{product.name}</td>
+                      <td>{moment(product.expireDate).fromNow()}</td>
+                      <td>
+                        {product.category &&
+                          product.category.map((c, i) => (
+                            <span key={i}>{c.name}</span>
+                          ))}
+                      </td>
+                    </tr>
+                  </tbody>
+                ))}
+              </table>
+            </div>
+            <div className="container">
+              <div className="row">
+                <div className="col-md-4 offset-md-4">
+                  <ReactToPrint
+                    trigger={() => (
+                      <button className="btn btn-primary float-right">
+                        Print / Download
+                      </button>
+                    )}
+                    content={() => componentRef.current}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
         {/* <pre>{JSON.stringify(products, null, 4)}</pre> */}
       </AdminRoute>
     </Layout>

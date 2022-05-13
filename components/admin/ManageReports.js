@@ -8,6 +8,7 @@ import { MDBDataTable } from 'mdbreact';
 import moment from 'moment';
 import axios from 'axios';
 import { Button, Modal, Spin, Avatar } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import Loader from '../layout/Loader';
 import ReactToPrint from 'react-to-print';
@@ -222,7 +223,7 @@ function ManageReports(props) {
                 className="btn btn-danger mx-2"
                 onClick={() => showPrintData(report)}
               >
-                <i className="fa fa-print"></i>
+                <PrinterOutlined style={{ fontSize: 25 }} />
               </button>
             </>
           ),

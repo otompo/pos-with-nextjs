@@ -8,6 +8,7 @@ import Loader from '../../../components/layout/Loader';
 import UserRoute from '../../../components/routes/UserRoutes';
 import ReactToPrint from 'react-to-print';
 import { Modal } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons';
 import FormatCurrency from '../../../components/FormatCurrency';
 import moment from 'moment';
 const { confirm } = Modal;
@@ -138,7 +139,7 @@ const Index = () => {
                 className="btn btn-danger mx-2"
                 onClick={() => showPrintData(sale)}
               >
-                <i className="fa fa-print"></i>
+                <PrinterOutlined style={{ fontSize: 25 }} />
               </button>
             </>
           ),

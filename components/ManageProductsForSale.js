@@ -14,6 +14,7 @@ import { CartContext } from '../context/cartContext';
 import Cart from './Cart';
 import { addToCart } from '../actions/Actions';
 import FormatCurrency from './FormatCurrency';
+import { PrinterOutlined, PrinterFilled } from '@ant-design/icons';
 import moment from 'moment';
 
 const { confirm } = Modal;
@@ -277,7 +278,7 @@ function ManageProductsForSale(props) {
                   setActionTriggered('ACTION_2');
                 }}
               >
-                <i className="fa fa-print"></i>
+                <PrinterOutlined style={{ fontSize: 25 }} />
               </button>
             </div>
           </div>
