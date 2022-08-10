@@ -13,7 +13,7 @@ import Layout from '../layout/Layout';
 import moment from 'moment';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import Loader from '../layout/Loader';
 import Link from 'next/link';
 
@@ -280,6 +280,7 @@ const ManageUsers = () => {
 
     return data;
   };
+
   return (
     <Layout title="Manage Staff">
       <AdminRoute>

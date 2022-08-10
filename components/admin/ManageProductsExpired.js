@@ -1,18 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Modal, Avatar } from 'antd';
-import {
-  EditOutlined,
-  PrinterOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons';
+import { PrinterOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import AdminRoute from '../routes/AdminRoutes';
 import { MDBDataTable } from 'mdbreact';
 import Layout from '../layout/Layout';
 import moment from 'moment';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import Loader from '../layout/Loader';
 import ReactToPrint from 'react-to-print';
+import FormatCurrency from '../FormatCurrency';
 
 const { confirm } = Modal;
 
@@ -99,11 +96,6 @@ const ManageProductsExpired = () => {
     const data = {
       columns: [
         {
-          label: 'Image',
-          field: 'image',
-          sort: 'asc',
-        },
-        {
           label: 'Name',
           field: 'name',
           sort: 'asc',
@@ -119,13 +111,13 @@ const ManageProductsExpired = () => {
           sort: 'asc',
         },
         {
-          label: 'Unit Price',
-          field: 'price',
+          label: 'Cost Price',
+          field: 'costPrice',
           sort: 'asc',
         },
         {
-          label: 'Discount Price',
-          field: 'discountPrice',
+          label: 'Selling Price',
+          field: 'sellingPrice',
           sort: 'asc',
         },
         {
@@ -133,27 +125,12 @@ const ManageProductsExpired = () => {
           field: 'expireDate',
           sort: 'asc',
         },
-        {
-          label: 'Discount',
-          field: 'discount',
-          sort: 'asc',
-        },
-        {
-          label: 'Tax',
-          field: 'tax',
-          sort: 'asc',
-        },
+
         {
           label: 'Created At',
           field: 'createdat',
           sort: 'asc',
         },
-
-        // {
-        //   label: 'Action',
-        //   field: 'action',
-        //   sort: 'asc',
-        // },
       ],
       rows: [],
     };
@@ -161,7 +138,6 @@ const ManageProductsExpired = () => {
     products &&
       products.forEach((product, index) => {
         data.rows.push({
-          image: <Avatar size={30} src={product && product.imagePath} />,
           name: `${product.name}`,
           category: `${
             product &&
@@ -169,11 +145,9 @@ const ManageProductsExpired = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `GH₵ ${Number(product.price).toFixed(2)}`,
-          discountPrice: `GH₵ ${product.discountPrice.toFixed(2)}`,
+          costPrice: `${FormatCurrency(product.costPrice)}`,
+          sellingPrice: `${FormatCurrency(product.sellingPrice)}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
-          discount: `${product.discount}`,
-          tax: `${product.tax}`,
           createdat: `${moment(product.createdAt).fromNow()}`,
 
           // action: (
@@ -237,7 +211,6 @@ const ManageProductsExpired = () => {
               <table width="100%" className="mb-10 table table-striped">
                 <thead>
                   <tr className="bg-gray-100 p-1">
-                    <td className="font-bold">Image</td>
                     <td className="font-bold">Name</td>
                     <td className="font-bold">Expired Date</td>
                     <td className="font-bold">Category</td>
@@ -246,10 +219,6 @@ const ManageProductsExpired = () => {
                 {products.map((product) => (
                   <tbody key={product._id}>
                     <tr className="h-10">
-                      <td>
-                        {' '}
-                        <Avatar size={30} src={product && product.imagePath} />
-                      </td>
                       <td>{product.name}</td>
                       <td>{moment(product.expireDate).fromNow()}</td>
                       <td>

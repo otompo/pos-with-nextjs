@@ -3,6 +3,11 @@ const { Schema } = mongoose;
 
 const reportsSchema = new Schema(
   {
+    totalCost: {
+      type: Number,
+      trim: true,
+      required: [true, 'totalSales is required'],
+    },
     totalSales: {
       type: Number,
       trim: true,
@@ -18,7 +23,21 @@ const reportsSchema = new Schema(
       trim: true,
       required: [true, 'profit is required'],
     },
-
+    subProfit: {
+      type: Number,
+      trim: true,
+      required: [true, 'sub profit is required'],
+    },
+    costStartDate: {
+      type: Date,
+      required: true,
+      trim: true,
+    },
+    costEndDate: {
+      type: Date,
+      required: true,
+      trim: true,
+    },
     salesStartDate: {
       type: Date,
       required: true,

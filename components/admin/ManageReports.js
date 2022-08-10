@@ -9,27 +9,34 @@ import moment from 'moment';
 import axios from 'axios';
 import { Button, Modal, Spin, Avatar } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import Loader from '../layout/Loader';
 import ReactToPrint from 'react-to-print';
+import ConvertError from '../../hooks/ConvertError';
+import useSettings from '../../hooks/useSettings';
+import renderHTML from 'react-render-html';
 const { confirm } = Modal;
 
 function ManageReports(props) {
   const [salesStartDate, setSalesStartDate] = useState(new Date());
   const [salesEndDate, setSalesEndDate] = useState(new Date());
 
+  const [costStartDate, setCostStartDate] = useState(new Date());
+  const [costEndDate, setCostEndDate] = useState(new Date());
+
   const [expensesStartDate, setExpensesStartDate] = useState(new Date());
   const [expensesEndDate, setExpensesEndDate] = useState(new Date());
 
   const [totalSales, setTotalSales] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [profit, setProfit] = useState(0);
+  const [subProfit, setSubProfit] = useState(0);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [tempData, setTempData] = useState([]);
-  const [company, setCompany] = useState([]);
 
   const showPrintData = (report) => {
     let tempData = [report];
@@ -54,34 +61,46 @@ function ManageReports(props) {
     window.print();
   };
 
-  useEffect(() => {
-    setProfit(totalSales - totalExpenses);
-  }, [totalSales, totalExpenses]);
+  const {
+    name,
+    address,
+    email,
+    contactNumber,
+    website,
+    companyLogo,
+    description,
+  } = useSettings();
 
   useEffect(() => {
-    loadComapny();
-  }, []);
+    setSubProfit(totalSales - totalCost);
+    setProfit(subProfit - totalExpenses);
+  }, [totalSales, totalCost, subProfit, totalExpenses]);
 
   useEffect(() => {
     handleSalesSubmit();
     handleExpensesSubmit();
+    handleCostSubmit();
   }, []);
 
   useEffect(() => {
     getAllReports();
   }, [success]);
 
-  const loadComapny = async () => {
+  const handleCostSubmit = async () => {
     try {
-      // setLoading(true);
-      const { data } = await axios.get(`/api/admin/settings`);
-      setCompany(data);
-      // setLoading(false);
+      const { data } = await axios.get(
+        `/api/admin/cost/totalcostforseslecteddays?costStartDate=${moment(
+          costStartDate,
+        ).format('Y/MM/DD')}&costEndDate=${moment(costEndDate).format(
+          'Y/MM/DD',
+        )}`,
+      );
+      setTotalCost(data.total);
     } catch (err) {
       console.log(err);
-      // setLoading(false);
     }
   };
+
   const handleSalesSubmit = async () => {
     try {
       const { data } = await axios.get(
@@ -107,6 +126,7 @@ function ManageReports(props) {
           'Y/MM/DD',
         )}`,
       );
+
       setTotalExpenses(data.amount);
     } catch (err) {
       console.log(err);
@@ -115,25 +135,27 @@ function ManageReports(props) {
 
   const handleSubmitData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       setSuccess(true);
       const { data } = await axios.post(`/api/admin/reports`, {
+        totalCost,
+        totalSales,
+        totalExpenses,
+        profit,
+        subProfit,
+        costStartDate,
+        costEndDate,
         salesStartDate,
         salesEndDate,
         expensesStartDate,
         expensesEndDate,
-        totalSales,
-        totalExpenses,
-        profit,
       });
-      setLoading(false);
+      // setLoading(false);
       setSuccess(false);
-
       toast.success('Success');
     } catch (err) {
       console.log(err);
       toast.error(err.response.data.message);
-      setLoading(false);
       setSuccess(false);
     }
   };
@@ -239,13 +261,61 @@ function ManageReports(props) {
         <h1 className="lead">Manage Reports</h1>
         <hr />
         <div className="row">
-          <div className="col-md-6">
-            <h4 className="lead text-center">
-              SELECT START AND END DATE FOR TOTAL SALES
-            </h4>
+          <div className="col-md-4">
+            <h4 className="lead text-center">COST START AND END DATE</h4>
 
             <div className="row">
-              <div className="col-md-5">
+              <div className="col-md-4">
+                <DatePicker
+                  className="w-100"
+                  selected={costStartDate}
+                  onChange={(date) => setCostStartDate(date)}
+                  // minDate={new Date()}
+                  dateFormat="MMMM d, yyyy"
+                  isClearable
+                  placeholderText="I have been cleared!"
+                />
+              </div>
+              <div className="col-md-4">
+                <DatePicker
+                  className="w-100"
+                  selected={costEndDate}
+                  onChange={(date) => setCostEndDate(date)}
+                  // minDate={new Date()}
+                  dateFormat="MMMM d, yyyy"
+                  isClearable
+                  placeholderText="I have been cleared!"
+                />
+              </div>
+              <div className="col-md-4">
+                <Button
+                  shape="round"
+                  type="primary"
+                  onClick={handleCostSubmit}
+                  block
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+
+            <div className="card my-4 bg-success">
+              <div className="card-body text-center">
+                <h4> TOTAL COST</h4>
+                <div className="text-secondary">
+                  <h2 className="text-white">
+                    {FormatCurrency(ConvertError(Number(totalCost)))}
+                  </h2>
+                  {/* <h2>{JSON.stringify(totalSales, null, 4)} </h2> */}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <h4 className="lead text-center">SALES START AND END DATE</h4>
+
+            <div className="row">
+              <div className="col-md-4">
                 <DatePicker
                   className="w-100"
                   selected={salesStartDate}
@@ -256,7 +326,7 @@ function ManageReports(props) {
                   placeholderText="I have been cleared!"
                 />
               </div>
-              <div className="col-md-5">
+              <div className="col-md-4">
                 <DatePicker
                   className="w-100"
                   selected={salesEndDate}
@@ -267,11 +337,12 @@ function ManageReports(props) {
                   placeholderText="I have been cleared!"
                 />
               </div>
-              <div className="col-md-2">
+              <div className="col-md-4">
                 <Button
                   shape="round"
                   type="primary"
                   onClick={handleSalesSubmit}
+                  block
                 >
                   Submit
                 </Button>
@@ -290,12 +361,11 @@ function ManageReports(props) {
               </div>
             </div>
           </div>
-          <div className="col-md-6">
-            <h4 className="lead text-center">
-              SELECT START AND END DATE FOR TOTAL EXPENSES
-            </h4>
+
+          <div className="col-md-4">
+            <h4 className="lead text-center">EXPENSES START AND END DATE</h4>
             <div className="row">
-              <div className="col-md-5">
+              <div className="col-md-4">
                 <DatePicker
                   className="w-100"
                   selected={expensesStartDate}
@@ -306,7 +376,7 @@ function ManageReports(props) {
                   placeholderText="I have been cleared!"
                 />
               </div>
-              <div className="col-md-5">
+              <div className="col-md-4">
                 <DatePicker
                   className="w-100"
                   selected={expensesEndDate}
@@ -317,11 +387,12 @@ function ManageReports(props) {
                   placeholderText="I have been cleared!"
                 />
               </div>
-              <div className="col-md-2">
+              <div className="col-md-4">
                 <Button
                   shape="round"
                   type="primary"
                   onClick={handleExpensesSubmit}
+                  block
                 >
                   Submit
                 </Button>
@@ -339,19 +410,33 @@ function ManageReports(props) {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="card my-4 bg-secondary">
                 <div className="card-body text-center">
-                  <h4>PROFIT</h4>
+                  <h4>SUB PROFIT (SALES-COST)</h4>
                   <div className="text">
                     <h2 className="text-white">
-                      {FormatCurrency(Number(totalSales - totalExpenses))}{' '}
+                      {FormatCurrency(ConvertError(Number(subProfit)))}{' '}
                     </h2>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 text-center mt-5">
+            <div className="col-md-4">
+              <div className="card my-4 bg-secondary">
+                <div className="card-body text-center">
+                  <h5>PROFIT ((SALES-COST)-EXPENSES)</h5>
+                  <div className="text">
+                    <h2 className="text-white">
+                      {FormatCurrency(
+                        ConvertError(Number(subProfit - totalExpenses)),
+                      )}{' '}
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 text-center mt-5">
               <h4 className="lead">CLICK ON BUTTON BELOW TO SAVE DATA</h4>
               <div className="text">
                 <Button
@@ -361,7 +446,8 @@ function ManageReports(props) {
                   style={{ width: '50%' }}
                   onClick={handleSubmitData}
                 >
-                  {loading ? <Spin /> : 'Save Data'}
+                  {/* {loading ? <Spin /> : 'Save Data'} */}
+                  Save
                 </Button>
               </div>
             </div>
@@ -396,42 +482,33 @@ function ManageReports(props) {
         >
           <div className="invoice__preview bg-white  rounded">
             <div ref={componentRef} className="p-5" id="invoice__preview">
-              {company &&
-                company.map((item) => (
-                  <p className="c_logo" key={item._id}>
+              {/*<p className="c_logo" key={item._id}>
                     {item.logo ? (
                       <Avatar size={90} src={item && item.logo} />
                     ) : (
                       <Avatar size={90} src={item && item.logoDefualt} />
                     )}
-                  </p>
-                ))}
+                  </p> */}
               <div className="container">
                 <div className="row">
                   <div className="col-md-12">
-                    {company &&
-                      company.map((item) => (
-                        <ul key={item.slug}>
-                          <li>
-                            <h2>{item.name}</h2>
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Email:</h6> {item.email}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Website:</h6>{' '}
-                            {item.website}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Contact:</h6>{' '}
-                            {item.contactNumber}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Address:</h6>{' '}
-                            {item.address}
-                          </li>
-                        </ul>
-                      ))}
+                    <ul>
+                      <li>
+                        <h2>{name}</h2>
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Email:</h6> {email}
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Website:</h6> {website}
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Contact:</h6> {contactNumber}
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Address:</h6> {address}
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -505,14 +582,11 @@ function ManageReports(props) {
 
               <hr />
 
-              {company &&
-                company.map((item) => (
-                  <p className="descreption" key={item._id}>
-                    <span className="lead" style={{ fontSize: '15px' }}>
-                      {item.description}
-                    </span>
-                  </p>
-                ))}
+              <p className="descreption">
+                <span className="lead" style={{ fontSize: '15px' }}>
+                  {renderHTML(description)}
+                </span>
+              </p>
             </div>
           </div>
           <div className="container">

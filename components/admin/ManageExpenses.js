@@ -11,7 +11,7 @@ import AdminRoute from '../routes/AdminRoutes';
 import Layout from '../layout/Layout';
 import moment from 'moment';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import Loader from '../layout/Loader';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

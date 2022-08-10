@@ -6,7 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 import AdminRoute from '../routes/AdminRoutes';
 import Layout from '../layout/Layout';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useRouter } from 'next/router';
@@ -16,32 +16,20 @@ const ManageEditProduct = () => {
   const { slug } = router.query;
   const [values, setValues] = useState({
     name: '',
-    price: '',
+    sellingPrice: '',
     quantity: '',
-    batchId: '',
-    tax: '',
+    costPrice: '',
     expireDate: '',
-    discount: '',
     loading: false,
   });
 
-  const [uploadButtonText, setUploadButtonText] = useState(
-    'Upload product Image',
-  );
   var preData = moment(values.expireDate).format('MMM Do Y');
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [ok, setOk] = useState(false);
   const [expireDate, setExpireDate] = useState(Date(preData).toDateString);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState([]); // categories
-  const [progress, setProgress] = useState(0);
-  const [image, setImage] = useState({});
-  const [imagePreview, setImagePreview] = useState('');
-  const [totalExpire, setTotalExpire] = useState('');
-  const [discountPrice, setDiscountPrice] = useState('');
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -85,15 +73,11 @@ const ManageEditProduct = () => {
       });
       const { data } = await axios.put(`/api/admin/products/edit/${slug}`, {
         name: values.name,
-        price: values.price,
+        costPrice: values.costPrice,
+        sellingPrice: values.sellingPrice,
         quantity: values.quantity,
-        batchId: values.batchId,
-        tax: values.tax,
-        discount: values.discount,
         selectedCategory: checked,
         expireDate,
-        // image,
-        // discountPrice,
       });
       toast.success('Success');
       router.push('/admin/products');
@@ -116,9 +100,9 @@ const ManageEditProduct = () => {
     }
   };
 
-  const setCategoriesArray = (blogCategories) => {
+  const setCategoriesArray = (productCategories) => {
     let ca = [];
-    blogCategories.map((c, i) => {
+    productCategories.map((c, i) => {
       ca.push(c._id);
     });
     setChecked(ca);
@@ -142,7 +126,6 @@ const ManageEditProduct = () => {
 
   const findOutCategory = (c) => {
     const result = checked.indexOf(c);
-
     if (result !== -1) {
       return true;
     } else {
@@ -167,28 +150,6 @@ const ManageEditProduct = () => {
     );
   };
 
-  const handleImage = async (e) => {
-    e.preventDefault();
-    let file = e.target.files[0];
-    setUploadButtonText(file.name);
-    setImagePreview(window.URL.createObjectURL(file));
-    const imageData = new FormData();
-    imageData.append('image', file);
-    // resize image and send image to backend
-    try {
-      let { data } = await axios.post(`/api/upload/image`, imageData);
-      // set image in the state
-      setImage(data);
-      setLoading(false);
-      setUploadButtonText('Upload Image');
-      toast.success('Success');
-    } catch (err) {
-      console.log(err.response.data.message);
-      setUploadButtonText('Upload Image');
-      setLoading(false);
-    }
-  };
-
   return (
     <Layout title={slug}>
       <AdminRoute>
@@ -197,22 +158,16 @@ const ManageEditProduct = () => {
             <div className="col-md-6">
               <h1 className="lead">Manage {values.name}</h1>
             </div>
-            <div className="col-md-4 offset-md-2 flost-left">
-              <h1 className="lead">Discount Price </h1>
-              <h4>
-                GH &#x20B5;
-                {values.price - (values.price * values.discount) / 100}
-                .00
-              </h4>
-            </div>
           </div>
           <hr />
           <div className="row mx-3">
             <div className="col-md-6">
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
+                  <label for="name">Product Name</label>
                   <input
                     type="text"
+                    id="name"
                     name="name"
                     value={values.name}
                     onChange={handleChange}
@@ -222,7 +177,9 @@ const ManageEditProduct = () => {
                   />
                 </div>
                 <div className="form-group">
+                  <label for="qty">Product Quantity</label>
                   <input
+                    id="qty"
                     type="text"
                     name="quantity"
                     value={values.quantity}
@@ -233,10 +190,12 @@ const ManageEditProduct = () => {
                   />
                 </div>
                 <div className="form-group">
+                  <label for="cprice">Cost Price</label>
                   <input
+                    id="cprice"
                     type="text"
-                    name="price"
-                    value={values.price}
+                    name="costPrice"
+                    value={values.costPrice}
                     onChange={handleChange}
                     className="form-control mb-4 p-2"
                     placeholder="Enter price"
@@ -244,43 +203,24 @@ const ManageEditProduct = () => {
                   />
                 </div>
                 <div className="form-group">
+                  <label for="sprice">Selling Price</label>
                   <input
-                    type="number"
-                    name="discount"
-                    value={values.discount}
-                    onChange={handleChange}
-                    className="form-control mb-4 p-2"
-                    placeholder="Enter product discount  %"
-                    required
-                    min={0}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="number"
-                    name="tax"
-                    value={values.tax}
-                    onChange={handleChange}
-                    className="form-control mb-4 p-2"
-                    placeholder="Enter product tax"
-                    required
-                    min={0}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
+                    id="sprice"
                     type="text"
-                    name="batchId"
-                    value={values.batchId}
+                    name="sellingPrice"
+                    value={values.sellingPrice}
                     onChange={handleChange}
                     className="form-control mb-4 p-2"
-                    placeholder="Enter batch number"
+                    placeholder="Enter selling price"
                     required
+                    min={0}
                   />
                 </div>
 
                 <div className="form-group">
+                  <label for="expireDate">Expire Date</label>
                   <DatePicker
+                    id="expireDate"
                     className="w-100"
                     selected={expireDate}
                     onChange={(date) => setExpireDate(date)}

@@ -3,34 +3,49 @@ import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
 
 export const createReport = catchAsync(async (req, res, next) => {
+  // console.log(req.body);
+  // return;
   const {
+    totalCost,
+    totalSales,
+    totalExpenses,
+    profit,
+    subProfit,
+    costStartDate,
+    costEndDate,
     salesStartDate,
     salesEndDate,
     expensesStartDate,
     expensesEndDate,
-    totalSales,
-    totalExpenses,
-    profit,
   } = req.body;
   if (
+    !totalCost ||
+    !totalSales ||
+    !totalExpenses ||
+    !profit ||
+    !subProfit ||
+    !costStartDate ||
+    !costEndDate ||
     !salesStartDate ||
     !salesEndDate ||
     !expensesStartDate ||
-    !expensesEndDate ||
-    !totalSales ||
-    !totalExpenses ||
-    !profit
+    !expensesEndDate
   ) {
     return next(new AppError('No data selected', 500));
   }
+
   const data = await new Report({
+    totalCost,
+    totalSales,
+    totalExpenses,
+    profit,
+    subProfit,
+    costStartDate,
+    costEndDate,
     salesStartDate,
     salesEndDate,
     expensesStartDate,
     expensesEndDate,
-    totalSales,
-    totalExpenses,
-    profit,
   }).save();
   res.send(data);
 });

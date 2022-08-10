@@ -31,11 +31,6 @@ const Index = () => {
   const setData = () => {
     const data = {
       columns: [
-        // {
-        //   label: 'Image',
-        //   field: 'image',
-        //   sort: 'asc',
-        // },
         {
           label: 'Products Name',
           field: 'productsname',
@@ -47,25 +42,14 @@ const Index = () => {
           sort: 'asc',
         },
 
-        // {
-        //   label: 'Price',
-        //   field: 'price',
-        //   sort: 'asc',
-        // },
-
-        {
-          label: 'Sub Total',
-          field: 'subtotal',
-          sort: 'asc',
-        },
-        {
-          label: 'Total Tax',
-          field: 'totaltax',
-          sort: 'asc',
-        },
         {
           label: 'Grand Total',
           field: 'grandtotal',
+          sort: 'asc',
+        },
+        {
+          label: 'Payment Method',
+          field: 'paymentMethod',
           sort: 'asc',
         },
       ],
@@ -82,10 +66,8 @@ const Index = () => {
                 <span key={product._id}>
                   <h6 style={{ color: '#e74c3c' }}>{product.name}</h6>
                   <h6 className="d-inline pl-4">Price:</h6> GH&#x20B5;
-                  {product.discountPrice.toFixed(2)}{' '}
-                  <h6 className="d-inline pl-2">Tax:</h6> GH&#x20B5;{' '}
-                  {product.tax}.00 <h6 className="d-inline pl-2">Quantity:</h6>{' '}
-                  {product.count}
+                  {FormatCurrency(product.sellingPrice)}{' '}
+                  <h6 className="d-inline pl-2">Quantity:</h6> {product.count}
                   <br />
                 </span>
               ))}
@@ -93,10 +75,8 @@ const Index = () => {
           ),
 
           quantity: `${sale.quantitySold}`,
-          subtotal: `${FormatCurrency(sale.subTotal)}`,
-          totaltax: `${FormatCurrency(sale.totalTax)}`,
-
           grandtotal: `${FormatCurrency(sale.grandTotal)}`,
+          paymentMethod: `${sale.paymentMethod}`,
         });
       });
 

@@ -3,7 +3,7 @@ import AdminRoute from '../routes/AdminRoutes';
 import Layout from '../layout/Layout';
 import moment from 'moment';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { PrinterOutlined } from '@ant-design/icons';
 import Loader from '../layout/Loader';
 import { Button, Modal, Avatar } from 'antd';
@@ -73,14 +73,10 @@ const ManageDailySales = () => {
       setLoading(false);
     }
   };
+
   const setData = () => {
     const data = {
       columns: [
-        // {
-        //   label: 'Image',
-        //   field: 'image',
-        //   sort: 'asc',
-        // },
         {
           label: 'Products Name',
           field: 'productsname',
@@ -91,12 +87,6 @@ const ManageDailySales = () => {
           field: 'quantity',
           sort: 'asc',
         },
-
-        // {
-        //   label: 'Price',
-        //   field: 'price',
-        //   sort: 'asc',
-        // },
 
         {
           label: 'Sub Total',
@@ -120,26 +110,21 @@ const ManageDailySales = () => {
     sales &&
       sales.forEach((sale, index) => {
         data.rows.push({
-          // image: <Avatar size={30} src={product && product.imagePath} />,
           productsname: (
             <span>
               {sale.products.map((product) => (
                 <span key={product._id}>
                   <h6 style={{ color: '#e74c3c' }}>{product.name}</h6>
-                  <h6 className="d-inline pl-4">Price:</h6> GH&#x20B5;
-                  {product.discountPrice.toFixed(2)}{' '}
-                  <h6 className="d-inline pl-2">Tax:</h6> GH&#x20B5;{' '}
-                  {product.tax}.00 <h6 className="d-inline pl-2">Quantity:</h6>{' '}
-                  {product.count}
+                  <h6 className="d-inline pl-4">Selling Price:</h6> GH&#x20B5;
+                  {FormatCurrency(product.sellingPrice)}
+                  <h6 className="d-inline pl-2">Quantity:</h6> {product.count}
                   <br />
                 </span>
               ))}
             </span>
           ),
-
           quantity: `${sale.quantitySold}`,
           subtotal: `${FormatCurrency(sale.subTotal)}`,
-          totaltax: `${FormatCurrency(sale.totalTax)}`,
           grandtotal: `${FormatCurrency(sale.grandTotal)}`,
         });
       });
@@ -253,11 +238,9 @@ const ManageDailySales = () => {
               <table width="100%" className="mb-10 table table-striped">
                 <thead>
                   <tr className="bg-gray-100 p-1">
-                    <td className="font-bold">Image</td>
                     <td className="font-bold">Name</td>
                     <td className="font-bold">Price</td>
                     <td className="font-bold">Quantity Sold</td>
-                    <td className="font-bold">Tax</td>
                     <td className="font-bold">Amount</td>
                   </tr>
                 </thead>
@@ -267,21 +250,16 @@ const ManageDailySales = () => {
                       {sale.products.map((product) => (
                         <tbody>
                           <tr>
-                            <td>
-                              <Avatar
-                                size={30}
-                                src={product && product.imagePath}
-                              />
-                            </td>
                             <td>{product.name}</td>
-                            <td> {FormatCurrency(product.discountPrice)}</td>
+                            <td>
+                              {' '}
+                              {FormatCurrency(Number(product.sellingPrice))}
+                            </td>
                             <td> {product.count}</td>
-                            <td> {product.count * product.tax}</td>
                             <td>
                               {' '}
                               {FormatCurrency(
-                                product.discountPrice * product.count +
-                                  product.tax,
+                                product.sellingPrice * product.count,
                               )}
                             </td>
                           </tr>

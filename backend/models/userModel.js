@@ -39,12 +39,6 @@ const userSchema = new Schema(
       select: false,
     },
 
-    profileImage: {},
-
-    picture: {
-      type: String,
-      default: '/avatar.png',
-    },
     role: {
       type: [String],
       default: ['Staff'],
@@ -52,26 +46,6 @@ const userSchema = new Schema(
     },
     generatedPasword: {
       type: String,
-    },
-    facebook: {
-      type: String,
-      trim: true,
-    },
-    twitter: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
-    linkedIn: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
-    bio: {
-      type: {},
-      trim: true,
-      min: 100,
-      max: 2000,
     },
     last_login_date: {
       type: Date,

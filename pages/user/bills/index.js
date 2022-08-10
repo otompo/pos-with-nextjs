@@ -11,6 +11,8 @@ import { Modal } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons';
 import FormatCurrency from '../../../components/FormatCurrency';
 import moment from 'moment';
+import renderHTML from 'react-render-html';
+import useSettings from '../../../hooks/useSettings';
 const { confirm } = Modal;
 
 const Index = () => {
@@ -18,7 +20,16 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [tempData, setTempData] = useState([]);
-  const [company, setCompany] = useState([]);
+
+  const {
+    name,
+    address,
+    email,
+    contactNumber,
+    website,
+    companyLogo,
+    description,
+  } = useSettings();
 
   const showPrintData = (sale) => {
     let tempData = [sale];
@@ -45,7 +56,6 @@ const Index = () => {
 
   useEffect(() => {
     showSales();
-    loadComapny();
   }, []);
 
   const showSales = async () => {
@@ -60,18 +70,6 @@ const Index = () => {
     }
   };
 
-  const loadComapny = async () => {
-    try {
-      // setLoading(true);
-      const { data } = await axios.get(`/api/admin/settings`);
-      setCompany(data);
-      // setLoading(false);
-    } catch (err) {
-      console.log(err);
-      // setLoading(false);
-    }
-  };
-
   const setData = () => {
     const data = {
       columns: [
@@ -81,24 +79,19 @@ const Index = () => {
           sort: 'asc',
         },
         {
-          label: 'Date Format: DD/MM/Y',
+          label: 'Date',
           field: 'date',
           sort: 'asc',
         },
 
         {
-          label: 'Sub Total',
-          field: 'subtotal',
-          sort: 'asc',
-        },
-        {
-          label: 'Total Tax',
-          field: 'totaltax',
-          sort: 'asc',
-        },
-        {
           label: 'Grand Total',
           field: 'grandtotal',
+          sort: 'asc',
+        },
+        {
+          label: 'Payment Method',
+          field: 'paymentMethod',
           sort: 'asc',
         },
         {
@@ -119,9 +112,7 @@ const Index = () => {
                 <span key={product._id}>
                   <h6 style={{ color: '#e74c3c' }}>{product.name}</h6>
                   <h6 className="d-inline pl-4">Price:</h6> GH&#x20B5;
-                  {product.discountPrice.toFixed(2)}{' '}
-                  <h6 className="d-inline pl-2">Tax:</h6> GH&#x20B5;{' '}
-                  {product.tax.toFixed(2)}{' '}
+                  {product.sellingPrice.toFixed(2)}{' '}
                   <h6 className="d-inline pl-2">Quantity:</h6> {product.count}
                   <br />
                 </span>
@@ -129,10 +120,9 @@ const Index = () => {
             </span>
           ),
 
-          date: moment(sale.createdAt).format('DD/MM/Y'),
-          subtotal: `${FormatCurrency(sale.subTotal)}`,
-          totaltax: `${FormatCurrency(sale.totalTax)}`,
+          date: moment(sale.createdAt).format('ll'),
           grandtotal: `${FormatCurrency(sale.grandTotal)}`,
+          paymentMethod: sale.paymentMethod,
           action: (
             <>
               <button
@@ -181,42 +171,31 @@ const Index = () => {
         >
           <div className="invoice__preview bg-white  rounded">
             <div ref={componentRef} className="p-5" id="invoice__preview">
-              {company &&
-                company.map((item) => (
-                  <p className="c_logo" key={item._id}>
+              {/* <p className="c_logo" key={item._id}>
                     {item.logo ? (
                       <Avatar size={90} src={item && item.logo} />
                     ) : (
                       <Avatar size={90} src={item && item.logoDefualt} />
                     )}
-                  </p>
-                ))}
+                  </p> */}
               <div className="container">
                 <div className="row">
                   <div className="col-md-12">
-                    {company &&
-                      company.map((item) => (
-                        <ul key={item.slug}>
-                          <li>
-                            <h2>{item.name}</h2>
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Email:</h6> {item.email}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Website:</h6>{' '}
-                            {item.website}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Contact:</h6>{' '}
-                            {item.contactNumber}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Address:</h6>{' '}
-                            {item.address}
-                          </li>
-                        </ul>
-                      ))}
+                    <ul>
+                      <li>
+                        <h2>{name}</h2>
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Email:</h6> {email}
+                      </li>
+
+                      <li>
+                        <h6 className="d-inline">Contact:</h6> {contactNumber}
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Address:</h6> {address}
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -243,12 +222,10 @@ const Index = () => {
               <table width="100%" className="mb-10 table table-striped">
                 <thead>
                   <tr className="bg-gray-100 p-1">
-                    <td className="font-bold">Image</td>
                     <td className="font-bold">Name</td>
                     <td className="font-bold">Price</td>
                     <td className="font-bold">Quantity</td>
-                    <td className="font-bold">Tax</td>
-                    <td className="font-bold">Total Fare</td>
+                    <td className="font-bold">Total</td>
                   </tr>
                 </thead>
                 {tempData &&
@@ -256,22 +233,13 @@ const Index = () => {
                     temp.products.map((product) => (
                       <tbody key={product._id}>
                         <tr className="h-10">
-                          <td>
-                            {' '}
-                            <Avatar
-                              size={30}
-                              src={product && product.imagePath}
-                            />
-                          </td>
                           <td>{product.name}</td>
-                          <td>GH&#x20B5; {product.discountPrice}.00</td>
+                          <td>{product.sellingPrice}</td>
                           <td>{product.count}</td>
-                          <td>GH&#x20B5; {product.tax}.00</td>
                           <td>
-                            GH&#x20B5;{' '}
-                            {product.tax +
-                              product.count * product.discountPrice}
-                            .00
+                            {FormatCurrency(
+                              product.count * product.sellingPrice,
+                            )}
                           </td>
                         </tr>
                       </tbody>
@@ -283,21 +251,15 @@ const Index = () => {
                   <>
                     <div className="container" key={temp._id}>
                       <div className="row">
-                        {/* <div className="col-md-6">Yaw</div> */}
                         <div className="col-md-6 ml-5">
                           <h6 className="d-inline pl-4"> TOTAL QUANTITY:</h6>{' '}
                           {temp.quantitySold}
-                          <br />
+                          {/* <br />
                           <h6 className="d-inline pl-4"> SUB TOTAL:</h6>{' '}
-                          GH&#x20B5; {temp.subTotal}.00
-                          <br />
-                          <h6 className="d-inline pl-4">
-                            {' '}
-                            TAX:
-                          </h6> GH&#x20B5; {temp.totalTax}
+                          GH&#x20B5; {temp.subTotal}.00 */}
                           <br />
                           <h6 className="d-inline pl-4"> GRAND TOTAL:</h6>{' '}
-                          GH&#x20B5; {temp.grandTotal}.00
+                          {FormatCurrency(temp.grandTotal)}
                           <br />
                           <h6 className="d-inline pl-4">
                             {' '}
@@ -316,14 +278,11 @@ const Index = () => {
                   </div>
                 </div>
               </div>
-              {company &&
-                company.map((item) => (
-                  <p className="descreption" key={item._id}>
-                    <span className="lead" style={{ fontSize: '15px' }}>
-                      {item.description}
-                    </span>
-                  </p>
-                ))}
+              <p className="descreption">
+                <span className="lead" style={{ fontSize: '15px' }}>
+                  {renderHTML(description)}
+                </span>
+              </p>
             </div>
             <div className="container">
               <div className="row">

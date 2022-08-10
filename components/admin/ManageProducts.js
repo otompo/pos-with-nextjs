@@ -5,18 +5,18 @@ import download from 'downloadjs';
 import Link from 'next/link';
 import {
   DeleteOutlined,
-  DownloadOutlined,
   EditOutlined,
   SyncOutlined,
   ExclamationCircleOutlined,
   UploadOutlined,
   RedoOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import moment from 'moment';
 import AdminRoute from '../routes/AdminRoutes';
 import Layout from '../layout/Layout';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Loader from '../layout/Loader';
@@ -26,17 +26,12 @@ const { confirm } = Modal;
 const ManageProducts = () => {
   const [values, setValues] = useState({
     name: '',
-    price: '',
+    costPrice: '',
+    sellingPrice: '',
     quantity: '',
-    batchId: '',
-    tax: '',
-    discount: '',
     loading: false,
   });
   const [products, setProducts] = useState([]);
-  const [uploadButtonText, setUploadButtonText] = useState(
-    'Upload product Image',
-  );
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [ok, setOk] = useState(false);
   const [expireDate, setExpireDate] = useState(new Date());
@@ -45,10 +40,8 @@ const ManageProducts = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState([]); // categories
-  const [progress, setProgress] = useState(0);
-  const [image, setImage] = useState('/img/preview.ico');
-  const [csvFile, setCsvFile] = useState('');
-  const [imagePreview, setImagePreview] = useState('');
+  const [csvFile, setCsvFile] = useState([]);
+  const [file, setFile] = useState('');
   const [totalInStock, setTotalInStock] = useState('');
   const [totalAboutOutStock, setTotalAboutOutStock] = useState('');
   const [totalOutOfStock, setTotalOutOfStock] = useState('');
@@ -58,6 +51,8 @@ const ManageProducts = () => {
   const [actionTriggered, setActionTriggered] = useState('');
   const [quantity, setQuantity] = useState('');
   let currentQty = tempData[1];
+
+  // console.log('file', file.name);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -164,37 +159,22 @@ const ManageProducts = () => {
         ...values,
         selectedCategory,
         expireDate,
-        image,
-        // discountPrice,
+        // sellingPrice,
       });
       toast.success('Success');
       setValues({
         ...values,
         name: '',
-        price: '',
-        batchId: '',
+        sellingPrice: '',
+        costPrice: '',
         quantity: '',
-        tax: '',
-        discount: '',
         loading: false,
       });
-      setImagePreview('');
-      setImage({});
       setSuccess(false);
       setOk(false);
     } catch (err) {
       console.log(err);
       toast.error(err.response.data.message);
-      // setValues({
-      //   ...values,
-      //   name: '',
-      //   price: '',
-      //   batchId: '',
-      //   quantity: '',
-      //   tax: '',
-      //   discount: '',
-      //   loading: false,
-      // });
       setSuccess(false);
       setOk(false);
     }
@@ -268,27 +248,6 @@ const ManageProducts = () => {
     );
   };
 
-  const handleImage = async (e) => {
-    e.preventDefault();
-    let file = e.target.files[0];
-    setUploadButtonText(file.name);
-    setImagePreview(window.URL.createObjectURL(file));
-    const imageData = new FormData();
-    imageData.append('image', file);
-    // resize image and send image to backend
-    try {
-      let { data } = await axios.post(`/api/upload/image`, imageData);
-      // set image in the state
-      setImage(data);
-      setLoading(false);
-      setUploadButtonText('Upload Image');
-      toast.success('Success');
-    } catch (err) {
-      console.log(err.response.data.message);
-      setUploadButtonText('Upload Image');
-      setLoading(false);
-    }
-  };
   const handleDataExport = async () => {
     try {
       const res = (
@@ -305,12 +264,61 @@ const ManageProducts = () => {
       console.log(error);
     }
   };
-  const handleDataImport = async () => {
+
+  const handleOnChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+
+    const processCSV = (string, delim = ',') => {
+      const csvHeader = string.slice(0, string.indexOf('\r\n')).split(delim);
+      const csvRows = string.slice(string.indexOf('\n') + 1).split('\r\n');
+      // console.log(csvHeader);
+      // console.log(csvRows);
+      const array = csvRows.map((i) => {
+        const values = i.split(',');
+        const obj = csvHeader.reduce((object, header, index) => {
+          object[header] = values[index];
+          return object;
+        }, {});
+        return obj;
+      });
+
+      setCsvFile(array.slice(0, array.length - 1));
+    };
     try {
-      const { data } = await axios.post(`/api/admin/importdata`);
+      setValues({ ...values, loading: true });
+      setOk(true);
+      setSuccess(true);
+      const { data } = await axios.post(`/api/admin/importdata`, {
+        csvFile,
+      });
       toast.success('Data import Succcess');
+      setFile('');
+      setValues({
+        ...values,
+        name: '',
+        sellingPrice: '',
+        costPrice: '',
+        quantity: '',
+        loading: false,
+      });
+      setSuccess(false);
+      setOk(false);
     } catch (err) {
       console.log(err);
+      setSuccess(false);
+      setOk(false);
+    }
+    var fileReader = new FileReader();
+    if (file) {
+      fileReader.onload = function (event) {
+        const text = event.target.result;
+        processCSV(text);
+      };
+      fileReader.readAsText(file);
     }
   };
 
@@ -321,7 +329,7 @@ const ManageProducts = () => {
     return showModal();
   };
 
-  const handleQuantitySubmit = async (e) => {
+  const handleQuantityRestock = async (e) => {
     e.preventDefault();
 
     try {
@@ -348,11 +356,6 @@ const ManageProducts = () => {
     const data = {
       columns: [
         {
-          label: 'Image',
-          field: 'image',
-          sort: 'asc',
-        },
-        {
           label: 'Name',
           field: 'name',
           sort: 'asc',
@@ -368,13 +371,13 @@ const ManageProducts = () => {
           sort: 'asc',
         },
         {
-          label: 'Unit Price',
-          field: 'price',
+          label: 'Cost Price',
+          field: 'costprice',
           sort: 'asc',
         },
         {
-          label: 'Discount Price',
-          field: 'discountPrice',
+          label: 'Selling Price',
+          field: 'sellingPrice',
           sort: 'asc',
         },
         {
@@ -382,16 +385,7 @@ const ManageProducts = () => {
           field: 'expireDate',
           sort: 'asc',
         },
-        {
-          label: 'Discount',
-          field: 'discount',
-          sort: 'asc',
-        },
-        {
-          label: 'Tax',
-          field: 'tax',
-          sort: 'asc',
-        },
+
         {
           label: 'Created At',
           field: 'createdat',
@@ -410,7 +404,6 @@ const ManageProducts = () => {
     products &&
       products.forEach((product, index) => {
         data.rows.push({
-          image: <Avatar size={30} src={product && product.imagePath} />,
           name: `${product.name}`,
           category: `${
             product &&
@@ -418,13 +411,10 @@ const ManageProducts = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `${FormatCurrency(Number(product.price))}`,
-          discountPrice: `${FormatCurrency(product.discountPrice)}`,
+          costprice: `${FormatCurrency(Number(product.costPrice))}`,
+          sellingPrice: `${FormatCurrency(product.sellingPrice)}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
-          discount: `${product.discount}`,
-          tax: `${product.tax}`,
           createdat: `${moment(product.createdAt).fromNow()}`,
-
           action: (
             <>
               <div className="container">
@@ -488,340 +478,121 @@ const ManageProducts = () => {
     <Layout title="Manage Products">
       <AdminRoute>
         <div className="container-fluid ourWorks">
-          <div className="row m-4">
-            <div className="col-md-10">
-              <div className="row">
-                <div className="col-md-3">
-                  <Link href="/admin/products/instock">
-                    <a className="btn text-white  button  mt-2">Instock</a>
-                  </Link>
-                  <Badge count={totalInStock && totalInStock} />
-                </div>
-                <div className="col-md-3">
-                  <Link href="/admin/products/aboutofstock">
-                    <a className="btn text-white  button mt-2">
-                      {' '}
-                      About to out Stock
-                    </a>
-                  </Link>
-                  <Badge count={totalAboutOutStock && totalAboutOutStock} />
-                </div>
-                <div className="col-md-3">
-                  <Link href="/admin/products/outofstock">
-                    <a className="btn text-white  button mt-2"> Out of Stock</a>
-                  </Link>
-                  <Badge count={totalOutOfStock && totalOutOfStock} />
-                </div>
-                <div className="col-md-3">
-                  <Link href="/admin/products/abouttoexpire">
-                    <a className="btn text-white  button mt-2">
-                      {' '}
-                      About to Expire
-                    </a>
-                  </Link>
-                  <Badge count={totalAboutToExpire && totalAboutToExpire} />
-                </div>
-
-                <div className="col-md-3">
-                  <Link href="/admin/products/expired">
-                    <a className="btn text-white  button mt-2"> Expired</a>
-                  </Link>
-                  <Badge count={totalExpire && totalExpire} />
-                </div>
-                <div className="col-md-3 my-3 exportData">
-                  <Button
-                    type="primary"
-                    shape="round"
-                    icon={<UploadOutlined size={35} />}
-                    size={35}
-                    onClick={() => {
-                      handleDataExport();
-                    }}
-                  >
-                    EXPORT CSV DATA
-                  </Button>
-                </div>
-                <div className="col-md-3 my-3 exportData">
-                  {/* <form onSubmit={handleDataImport}>
-                    <label className="btn btn-primary text-center">
-                      IMPORT CSV DATA
-                      <input
-                        type="file"
-                        name="csvFile"
-                        size="large"
-                        onChange={(e) => setCsvFile(e.target.value)}
-                        accept="csv/*"
-                        hidden
-                      />
-                    </label>
-                    <button type="submit" shape="round">
-                      Submit
-                    </button>
-                  </form> */}
-
-                  {/* <Button
-                    type="primary"
-                    shape="round"
-                    file="csv"
-                    icon={<DownloadOutlined />}
-                    onClick={() => {
-                      handleDataImport();
-                    }}
-                  >
-                    IMPORT CSV FILE
-                  </Button> */}
-                </div>
-              </div>
-            </div>
-
+          <div className="row  m-4">
             <div className="col-md-2">
+              <Link href="/admin/products/instock">
+                <a>
+                  <div className="containerItems">
+                    <div className="content">
+                      <h4>Instock</h4>
+                      <p>{totalInStock && totalInStock} </p>
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            </div>
+            <div className="col-md-2">
+              <Link href="/admin/products/aboutofstock">
+                <a>
+                  <div className="containerItems">
+                    <div className="content">
+                      <h4>About to out Stock</h4>
+                      <p>{totalAboutOutStock && totalAboutOutStock} </p>
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            </div>
+            <div className="col-md-2">
+              <Link href="/admin/products/outofstock">
+                <a>
+                  <div className="containerItems">
+                    <div className="content">
+                      <h4>Out Stock</h4>
+                      <p>{totalOutOfStock && totalOutOfStock} </p>
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            </div>
+            <div className="col-md-2">
+              <Link href="/admin/products/abouttoexpire">
+                <a>
+                  <div className="containerItems">
+                    <div className="content">
+                      <h4> About to Expire</h4>
+                      <p>{totalAboutToExpire && totalAboutToExpire}</p>
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            </div>
+            <div className="col-md-2">
+              <Link href="/admin/products/expired">
+                <a>
+                  <div className="containerItems">
+                    <div className="content">
+                      <h4>Expired</h4>
+                      <p>{totalExpire && totalExpire}</p>
+                    </div>
+                  </div>
+                </a>
+              </Link>
+            </div>
+          </div>
+          <hr />
+          <div className="row m-4">
+            <div className="col-md-3 offset-md-2 ">
               <p
-                className="btn text-white float-right btn-success mt-2"
+                className="btn text-white  btn-success block"
                 onClick={() => {
                   setIsModalVisible(true);
                   setActionTriggered('ACTION_1');
                 }}
               >
                 {' '}
-                Add Product
+                ADD PRODUCT
               </p>
             </div>
-            <Modal
-              title={
-                actionTriggered == 'ACTION_1' ? (
-                  <span>Add Product</span>
-                ) : (
-                  <>
-                    {' '}
-                    <span>Restock {tempData[0]} Quantity</span>
-                    <br />
-                    <span className="lead">
-                      Current Quantity is {tempData[1]}
-                    </span>
-                  </>
-                )
-              }
-              visible={isModalVisible}
-              onOk={handleOk}
-              onCancel={handleCancel}
-              footer={null}
-              width={actionTriggered == 'ACTION_1' ? 900 : 500}
-            >
-              {actionTriggered == 'ACTION_1' ? (
-                <div className="row">
-                  <div className="col-md-6">
-                    <form onSubmit={handleSubmit}>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          name="name"
-                          value={values.name}
-                          onChange={handleChange}
-                          className="form-control mb-4 p-2"
-                          placeholder="Enter name"
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          name="quantity"
-                          value={values.quantity}
-                          onChange={handleChange}
-                          className="form-control mb-4 p-2"
-                          placeholder="Enter quantity"
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          name="price"
-                          value={values.price}
-                          onChange={handleChange}
-                          className="form-control mb-4 p-2"
-                          placeholder="Enter price"
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="number"
-                          name="discount"
-                          value={values.discount}
-                          onChange={handleChange}
-                          className="form-control mb-4 p-2"
-                          placeholder="Enter product discount  %"
-                          required
-                          min={0}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="number"
-                          name="tax"
-                          value={values.tax}
-                          onChange={handleChange}
-                          className="form-control mb-4 p-2"
-                          placeholder="Enter product tax"
-                          required
-                          min={0}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          name="batchId"
-                          value={values.batchId}
-                          onChange={handleChange}
-                          className="form-control mb-4 p-2"
-                          placeholder="Enter batch number"
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <DatePicker
-                          className="w-100"
-                          selected={expireDate}
-                          onChange={(date) => setExpireDate(date)}
-                          minDate={new Date()}
-                          dateFormat="MMMM d, yyyy"
-                          isClearable
-                          placeholderText="I have been cleared!"
-                        />
-                      </div>
+            <div className="col-md-3">
+              <form>
+                <label className="btn btn-primary text-center ">
+                  {file && file ? file.name : '  SELECT CSV FILE'}
 
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="form-group">
-                            <label className="btn btn-dark btn-block text-left mt-3 text-center">
-                              {loading ? (
-                                <span className="spinLoader">
-                                  <Spin />
-                                </span>
-                              ) : (
-                                `${uploadButtonText}`
-                              )}
+                  <input
+                    type="file"
+                    id="csvFile"
+                    accept=".csv"
+                    onChange={handleOnChange}
+                    hidden
+                  />
+                </label>
+                <button
+                  className="btn btn-info"
+                  type="primary"
+                  onClick={(e) => {
+                    handleOnSubmit(e);
+                  }}
+                  style={{ marginLeft: 10 }}
+                >
+                  SUBMIT
+                </button>
+              </form>
+            </div>
 
-                              <input
-                                type="file"
-                                name="image"
-                                size="large"
-                                onChange={handleImage}
-                                accept="image/*"
-                                hidden
-                              />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="col-md-4 offset-md-2">
-                          <div className="form-group mt-3">
-                            {imagePreview ? (
-                              <Avatar size={40} src={imagePreview} />
-                            ) : (
-                              <Avatar size={40} src="/img/preview.ico" />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        {progress > 0 && (
-                          <Progress
-                            className="d-flex justify-content-center pt-2"
-                            percent={progress}
-                            steps={10}
-                          />
-                        )}
-                      </div>
-
-                      {/* <div className="form-group">
-                        <textarea
-                          rows="7"
-                          name="description"
-                          style={{ width: '100%' }}
-                          value={values.description}
-                          onChange={handleChange}
-                        ></textarea>
-                      </div> */}
-
-                      <div className="d-grid gap-2 my-2 ">
-                        <button
-                          className="btn btn-primary"
-                          disabled={
-                            !values.name ||
-                            !values.price ||
-                            !values.batchId ||
-                            !values.discount ||
-                            !values.tax ||
-                            !expireDate ||
-                            loading
-                          }
-                          type="submit"
-                        >
-                          {ok ? <SyncOutlined spin /> : 'Submit'}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                  <div className="col-md-6">
-                    <h1 className="lead  ml-5">Categories</h1>
-                    <hr />
-                    <div className="row">
-                      <div className="col-md-12">
-                        <ul>{showCategories()}</ul>
-                      </div>
-                      {/* <div className="col-md-6">
-                        <ul>{showCategoriesS()}</ul>
-                      </div> */}
-                    </div>
-
-                    <hr />
-                    <div className="row">
-                      <div className="col-md-6">
-                        <h1 className="lead">Discount Price </h1>
-                      </div>
-                      <div className="col-md-6">
-                        <h4>
-                          GH&#x20B5;
-                          {values.price -
-                            (values.price * values.discount) / 100}
-                          .00
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="row">
-                  <div className="col-md-12">
-                    <form onSubmit={handleQuantitySubmit}>
-                      <div className="form-group">
-                        <input
-                          type="number"
-                          // name="quantity"
-                          value={quantity}
-                          onChange={(e) => setQuantity(e.target.value)}
-                          className="form-control mb-4 p-2"
-                          placeholder="Enter quantity"
-                          required
-                        />
-                      </div>
-
-                      <div className="d-grid gap-2 my-2 ">
-                        <button
-                          className="btn btn-primary"
-                          // disabled={!values.name || loading}
-                          type="submit"
-                        >
-                          {/* {ok ? <SyncOutlined spin /> : 'Submit'} */}
-                          Update
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              )}
-            </Modal>
+            <div className="col-md-3">
+              <Button
+                type="primary"
+                shape="round"
+                icon={<UploadOutlined size={35} />}
+                size={35}
+                onClick={() => {
+                  handleDataExport();
+                }}
+              >
+                EXPORT CSV DATA
+              </Button>
+            </div>
           </div>
         </div>
         <hr />
@@ -833,7 +604,146 @@ const ManageProducts = () => {
           striped
           hover
         />
-        {/* <pre>{JSON.stringify(categories, null, 4)}</pre> */}
+        <Modal
+          title={
+            actionTriggered == 'ACTION_1' ? (
+              <span>Add Product</span>
+            ) : (
+              <>
+                {' '}
+                <span>Restock {tempData[0]} Quantity</span>
+                <br />
+                <span className="lead">Current Quantity is {tempData[1]}</span>
+              </>
+            )
+          }
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer={null}
+          width={actionTriggered == 'ACTION_1' ? 900 : 500}
+        >
+          {actionTriggered == 'ACTION_1' ? (
+            <div className="row">
+              <div className="col-md-6">
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="name"
+                      value={values.name}
+                      onChange={handleChange}
+                      className="form-control mb-4 p-2"
+                      placeholder="Enter name"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="quantity"
+                      value={values.quantity}
+                      onChange={handleChange}
+                      className="form-control mb-4 p-2"
+                      placeholder="Enter quantity"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="costPrice"
+                      value={values.costPrice}
+                      onChange={handleChange}
+                      className="form-control mb-4 p-2"
+                      placeholder="Enter cost price"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="sellingPrice"
+                      value={values.sellingPrice}
+                      onChange={handleChange}
+                      className="form-control mb-4 p-2"
+                      placeholder="Enter selling price"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label for="expireDate">Expire Date</label>
+                    <DatePicker
+                      id="expireDate"
+                      className="w-100"
+                      selected={expireDate}
+                      onChange={(date) => setExpireDate(date)}
+                      minDate={new Date()}
+                      dateFormat="MMMM d, yyyy"
+                      isClearable
+                      placeholderText="I have been cleared!"
+                    />
+                  </div>
+
+                  <div className="d-grid gap-2 my-2 ">
+                    <button
+                      className="btn btn-primary"
+                      disabled={
+                        !values.name ||
+                        !values.costPrice ||
+                        !values.sellingPrice ||
+                        !expireDate ||
+                        loading
+                      }
+                      type="submit"
+                    >
+                      {ok ? <SyncOutlined spin /> : 'Submit'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div className="col-md-6">
+                <h1 className="lead  ml-5">Categories</h1>
+                <hr />
+                <div className="row">
+                  <div className="col-md-12">
+                    <ul>{showCategories()}</ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="row">
+              <div className="col-md-12">
+                <form onSubmit={handleQuantityRestock}>
+                  <div className="form-group">
+                    <input
+                      type="number"
+                      // name="quantity"
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)}
+                      className="form-control mb-4 p-2"
+                      placeholder="Enter quantity"
+                      required
+                    />
+                  </div>
+
+                  <div className="d-grid gap-2 my-2 ">
+                    <button
+                      className="btn btn-primary"
+                      // disabled={!values.name || loading}
+                      type="submit"
+                    >
+                      {/* {ok ? <SyncOutlined spin /> : 'Submit'} */}
+                      Update
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </Modal>
       </AdminRoute>
     </Layout>
   );

@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useContext } from 'react';
 import TopTitle from '../home/TopTitle';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { SyncOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import axios from 'axios';

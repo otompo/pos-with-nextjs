@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { getSession } from 'next-auth/client';
 import Head from 'next/head';
-import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'nprogress/nprogress.css';
 import 'antd/dist/antd.css';
 import Footer from '../Footer';
-import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 const Layout = ({ children, title = 'POS' }) => {
@@ -73,7 +71,6 @@ const Layout = ({ children, title = 'POS' }) => {
         />
       </Head>
       {/* <Navbar /> */}
-      <ToastContainer position="bottom-right" />
       {children}
 
       {/* <Footer /> */}

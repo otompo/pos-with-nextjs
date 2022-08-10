@@ -11,7 +11,6 @@ module.exports = {
     AWS_SECRET_ACCESS_KEY: 'rDpLP1PnyfGJNJTKHBY7mmzYnSGVxM1G5r36Nj1O',
     AWS_REGION: 'us-west-2',
     AWS_API_VERSION: '2012-10-17',
-    EMAIL_FROM: 'pos@gmail.com',
     NEXTAUTH_URL: 'https://pos.com',
   },
 

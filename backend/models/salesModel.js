@@ -1,5 +1,4 @@
 import User from './userModel';
-import Product from './productModel';
 
 const mongoose = require('mongoose');
 
@@ -34,7 +33,7 @@ const salesSchema = mongoose.Schema(
       type: String,
       default: ['Cash'],
       require: true,
-      enum: ['Cash', 'MobileMoney'],
+      enum: ['Cash', 'MobileMoney', 'Gift'],
     },
     balance: {
       type: String,
@@ -44,12 +43,6 @@ const salesSchema = mongoose.Schema(
       type: Number,
       require: true,
     },
-    // cart: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: Product,
-    //   },
-    // ],
     saler: {
       type: mongoose.Schema.Types.ObjectId,
       ref: User,

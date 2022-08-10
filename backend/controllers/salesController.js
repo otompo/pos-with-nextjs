@@ -1,11 +1,6 @@
 import Sales from '../models/salesModel';
 import Product from '../models/productModel';
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
-import slugify from 'slugify';
-import { nanoid } from 'nanoid';
-import categoryModel from '../models/categoryModel';
-const moment = require('moment');
 
 export const createSales = catchAsync(async (req, res, next) => {
   // console.log(req.body);

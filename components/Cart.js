@@ -2,8 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { decrease, increase, removeFromCart } from '../actions/Actions';
 import Zoom from 'react-reveal/Zoom';
 import { DeleteOutlined } from '@ant-design/icons';
-import Modal from 'react-modal';
-import { Context } from '../context';
 
 function Cart({ item, dispatch, cart }) {
   return (

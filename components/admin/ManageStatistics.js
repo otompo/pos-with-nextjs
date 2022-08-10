@@ -35,6 +35,14 @@ const ManageStatistics = () => {
     labels: reports.map((x) => moment(x.monthSalesDate).format('MMMM Y')),
     datasets: [
       {
+        data: reports.map((x) => x.totalCost),
+        label: 'Cost',
+
+        backgroundColor: '#161615',
+        fill: true,
+        lineTension: 0.5,
+      },
+      {
         data: reports.map((x) => x.totalSales),
         label: 'Sales',
         backgroundColor: '#3333ff',
@@ -45,6 +53,13 @@ const ManageStatistics = () => {
         data: reports.map((x) => x.totalExpenses),
         label: 'Expenses',
         backgroundColor: '#ff3333',
+        fill: true,
+        lineTension: 0.5,
+      },
+      {
+        data: reports.map((x) => x.subProfit),
+        label: 'Sub Profit',
+        backgroundColor: '#00B14A',
         fill: true,
         lineTension: 0.5,
       },
@@ -68,12 +83,42 @@ const ManageStatistics = () => {
           <div className="col-md-3">
             <div className="card my-4 bg-primary">
               <div className="card-body text-center">
-                <h4>GRAND TOTAL SALES</h4>
+                <h4>SALES MADE SO FAR</h4>
                 <div className="text">
                   {grandTotalSales &&
                     grandTotalSales.map((total, i) => (
                       <h2 className="text-white" key={i}>
-                        {FormatCurrency(total.totalSales)}
+                        {FormatCurrency(Number(total.totalSales))}
+                      </h2>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="card my-4 bg-warning">
+              <div className="card-body text-center">
+                <h4>GRAND PRODUCTS COST PRICE</h4>
+                <div className="text">
+                  {products &&
+                    products.map((product, i) => (
+                      <h2 className="text-white" key={i}>
+                        {FormatCurrency(product.totalcost)}
+                      </h2>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="card my-4 bg-secondary">
+              <div className="card-body text-center">
+                <h4>GRAND PRODUCTS SELLING PRICE</h4>
+                <div className="text">
+                  {products &&
+                    products.map((product, i) => (
+                      <h2 className="text-white" key={i}>
+                        {FormatCurrency(product.totalSelles)}
                       </h2>
                     ))}
                 </div>
@@ -83,7 +128,7 @@ const ManageStatistics = () => {
           <div className="col-md-3">
             <div className="card my-4 bg-success">
               <div className="card-body text-center">
-                <h4>TOTAL QTY</h4>
+                <h4>TOTAL PRODUCTS QTY</h4>
                 <div className="text">
                   {products &&
                     products.map((product, i) => (
@@ -95,21 +140,8 @@ const ManageStatistics = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-3">
-            <div className="card my-4 bg-info">
-              <div className="card-body text-center">
-                <h4>TOTAL PRICE </h4>
-                <div className="text">
-                  {products.map((product, i) => (
-                    <h2 className="text-white" key={i}>
-                      {FormatCurrency(product.totalPrice)}
-                    </h2>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-3">
+
+          {/* <div className="col-md-3">
             <div className="card my-4 bg-danger">
               <div className="card-body text-center">
                 <h4>GRAND AMOUNT</h4>
@@ -117,14 +149,14 @@ const ManageStatistics = () => {
                   {products.map((product, i) => (
                     <h2 className="text-white" key={i}>
                       {FormatCurrency(
-                        product.totalPrice * product.totalQuantity,
+                        product.totalSelles * product.totalQuantity,
                       )}
                     </h2>
                   ))}
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="row my-2">
@@ -155,7 +187,7 @@ const ManageStatistics = () => {
           </div>
         </div>
 
-        {/* <pre>{JSON.stringify(reports, null, 4)}</pre> */}
+        {/* <pre>{JSON.stringify(products, null, 4)}</pre> */}
       </AdminRoute>
     </Layout>
   );

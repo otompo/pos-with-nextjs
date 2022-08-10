@@ -2,7 +2,7 @@ export const ACTIONS = {
   ADD_CART: 'ADD_CART',
   ADD_ORDERS: 'ADD_ORDERS',
 };
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 export const addToCart = (product, cart) => {
   if (product.quantity === 0)
     return toast.error('This product is out of stock.');

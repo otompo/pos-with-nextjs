@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import '../styles/globals.css';
-// import { csrfToken } from '../node_modules/csrf';
+
 import Router from 'next/router';
-import Loader from '../components/layout/Loader';
 import { AuthProvider } from '../context';
 import { CartProvider } from '../context/cartContext';
+import { Toaster } from 'react-hot-toast';
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -23,6 +23,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <AuthProvider>
+      <Toaster />
       <CartProvider>
         <Component {...pageProps} />
       </CartProvider>

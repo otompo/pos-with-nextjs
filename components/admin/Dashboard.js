@@ -5,6 +5,7 @@ import axios from 'axios';
 import Card from './Card';
 import { Line } from 'react-chartjs-2';
 import Loader from '../layout/Loader';
+import { toast } from 'react-hot-toast';
 import moment from 'moment';
 
 const Dashboard = ({ children }) => {

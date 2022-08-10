@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Spin, Modal, Avatar, Image } from 'antd';
-import { RedoOutlined, DeleteOutlined, SyncOutlined } from '@ant-design/icons';
+import { Spin, Modal } from 'antd';
+import { RedoOutlined } from '@ant-design/icons';
 import AdminRoute from '../routes/AdminRoutes';
 import { MDBDataTable } from 'mdbreact';
 import Layout from '../layout/Layout';
 import moment from 'moment';
-import TextTruncate from 'react-text-truncate';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import Resizer from 'react-image-file-resizer';
+import { toast } from 'react-hot-toast';
 import Loader from '../layout/Loader';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import FormatCurrency from '../FormatCurrency';
 
 const { confirm } = Modal;
@@ -99,11 +95,6 @@ const ManageProductsOutOfStock = () => {
     const data = {
       columns: [
         {
-          label: 'Image',
-          field: 'image',
-          sort: 'asc',
-        },
-        {
           label: 'Name',
           field: 'name',
           sort: 'asc',
@@ -119,30 +110,17 @@ const ManageProductsOutOfStock = () => {
           sort: 'asc',
         },
         {
-          label: 'Unit Price',
-          field: 'price',
+          label: 'Cost Price',
+          field: 'costPrice',
           sort: 'asc',
         },
-        {
-          label: 'Discount Price',
-          field: 'discountPrice',
-          sort: 'asc',
-        },
+
         {
           label: 'Expire Date',
           field: 'expireDate',
           sort: 'asc',
         },
-        {
-          label: 'Discount',
-          field: 'discount',
-          sort: 'asc',
-        },
-        {
-          label: 'Tax',
-          field: 'tax',
-          sort: 'asc',
-        },
+
         {
           label: 'Created At',
           field: 'createdat',
@@ -161,7 +139,6 @@ const ManageProductsOutOfStock = () => {
     products &&
       products.forEach((product, index) => {
         data.rows.push({
-          image: <Avatar size={30} src={product && product.imagePath} />,
           name: `${product.name}`,
           category: `${
             product &&
@@ -169,11 +146,9 @@ const ManageProductsOutOfStock = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `${FormatCurrency(Number(product.price))}`,
-          discountPrice: `${FormatCurrency(product.discountPrice)}`,
+          costPrice: `${FormatCurrency(Number(product.costPrice))}`,
+          sellingPrice: `${FormatCurrency(Number(product.sellingPrice))}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
-          discount: `${product.discount}`,
-          tax: `${product.tax}`,
           createdat: `${moment(product.createdAt).fromNow()}`,
 
           action: (

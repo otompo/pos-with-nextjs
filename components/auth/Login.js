@@ -1,7 +1,7 @@
 import React, { useState, Fragment, useContext } from 'react';
 import { getSession, signIn } from 'next-auth/client';
 import TopTitle from '../home/TopTitle';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { Context } from '../../context';
 import { useRouter } from 'next/router';
 import { Spin } from 'antd';

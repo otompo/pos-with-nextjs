@@ -1,13 +1,15 @@
 import nc from 'next-connect';
 import dbConnect from '../../../../backend/config/dbConnect';
-import { importProductData } from '../../../../backend/controllers/productController';
+import { getTotalCostAmount } from '../../../../backend/controllers/costController';
 import { isAdmin } from '../../../../backend/middlewares';
 import { isAuthenticatedUser } from '../../../../backend/middlewares/auth';
+
 import onError from '../../../../backend/utils/errors';
 const handler = nc({ onError });
 
 dbConnect();
 
-handler.use(isAuthenticatedUser, isAdmin).post(importProductData);
+// handler.get(getAllReviews);
+handler.use(isAuthenticatedUser, isAdmin).get(getTotalCostAmount);
 
 export default handler;

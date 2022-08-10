@@ -2,70 +2,41 @@ import Settings from '../models/settingsModel';
 import catchAsync from '../utils/catchAsync';
 import slugify from 'slugify';
 
-export const createCompanyDetails = catchAsync(async (req, res, next) => {
-  const { name } = req.body;
-  let slug = slugify(name).toLowerCase();
-  let settings = await new Settings({
-    slug,
-    ...req.body,
-  }).save();
+var cloudinary = require('cloudinary');
 
-  res.status(200).send(settings);
+cloudinary.config({
+  cloud_name: 'codesmart',
+  api_key: '924552959278257',
+  api_secret: 'nyl74mynmNWo5U0rzF8LqzcCE8U',
 });
 
-export const getCurrentCompany = catchAsync(async (req, res) => {
-  const settings = await Settings.find({});
-  res.send(settings);
-});
+export const createCompanyDetails = async (req, res) => {
+  try {
+    const { slug } = req.body;
+    const found = await Settings.findOne({ slug });
 
-export const currentCompany = catchAsync(async (req, res) => {
-  const { slug } = req.query;
-  const settings = await Settings.findOne({ slug });
-  res.send(settings);
-});
-
-export const updateCompanyDetails = catchAsync(async (req, res, next) => {
-  const { image, name, address, contactNumber, email, website, description } =
-    req.body;
-
-  const { slug } = req.query;
-  const settings = await Settings.findOne({ slug });
-  if (image) {
-    const update = await Settings.findOneAndUpdate(
-      { slug: settings.slug },
-      {
-        slug: slugify(name).toLowerCase(),
-        name: name,
-        address: address,
-        contactNumber: contactNumber,
-        email: email,
-        website: website,
-        description: description,
-        logo: image,
-        ...req.body,
-      },
-      {
+    if (found) {
+      // update
+      const updated = await Settings.findOneAndUpdate({ slug }, req.body, {
         new: true,
-      },
-    );
-    res.status(200).send(update);
-  } else {
-    const update = await Settings.findOneAndUpdate(
-      { slug: settings.slug },
-      {
-        slug: slugify(name).toLowerCase(),
-        name: name,
-        address: address,
-        contactNumber: contactNumber,
-        email: email,
-        website: website,
-        description: description,
-        ...req.body,
-      },
-      {
-        new: true,
-      },
-    );
-    res.status(200).send(update);
+      });
+      return res.json(updated);
+    } else {
+      // create
+      const created = await new Settings(req.body).save();
+      return res.json(created);
+    }
+  } catch (err) {
+    console.log(err);
   }
-});
+};
+
+export const getAllDetails = async (req, res) => {
+  try {
+    const { slug } = req.query;
+    const found = await Settings.findOne({ slug });
+    return res.json(found);
+  } catch (err) {
+    console.log(err);
+  }
+};

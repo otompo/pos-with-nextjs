@@ -4,7 +4,7 @@ import { Avatar, Badge, Button, Modal, Spin } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import UserRouter from './routes/UserRoutes';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import 'react-datepicker/dist/react-datepicker.css';
 import Loader from './layout/Loader';
 import Layout from './layout/Layout';
@@ -14,8 +14,10 @@ import { CartContext } from '../context/cartContext';
 import Cart from './Cart';
 import { addToCart } from '../actions/Actions';
 import FormatCurrency from './FormatCurrency';
-import { PrinterOutlined, PrinterFilled } from '@ant-design/icons';
+import { PrinterOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import useSettings from '../hooks/useSettings';
+import renderHTML from 'react-render-html';
 
 const { confirm } = Modal;
 
@@ -24,7 +26,6 @@ function ManageProductsForSale(props) {
   const { state, dispatch } = useContext(CartContext);
   const { cart } = state;
   const [subTotal, setSubTotal] = useState(0);
-  const [totalTax, setTotalTax] = useState(0);
   const [products, setProducts] = useState([]);
   const [quantitySold, setQuantitySold] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,10 +33,19 @@ function ManageProductsForSale(props) {
   const [success, setSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const [paidAmount, setPaidAmount] = useState(0);
-  const [grandTotal, setgGandTotal] = useState(0);
+  const [grandTotal, setGandTotal] = useState(0);
   const [sales, setSales] = useState([]);
-  const [company, setCompany] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const {
+    name,
+    address,
+    email,
+    contactNumber,
+    website,
+    companyLogo,
+    description,
+  } = useSettings();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -52,19 +62,20 @@ function ManageProductsForSale(props) {
   useEffect(() => {
     const getSubTotal = () => {
       const res = cart.reduce((prev, item) => {
-        return prev + item.discountPrice * item.count;
+        return prev + item.sellingPrice * item.count;
       }, 0);
 
       setSubTotal(res);
     };
 
-    const getTaxTotal = () => {
-      const res = cart.reduce((prev, item) => {
-        return prev + item.tax * item.count;
-      }, 0);
+    // const getTaxTotal = () => {
+    //   const res = cart.reduce((prev, item) => {
+    //     return prev + item.tax * item.count;
+    //   }, 0);
 
-      setTotalTax(res);
-    };
+    //   setTotalTax(res);
+    // };
+
     const getQuantitySold = () => {
       const res = cart.reduce((prev, item) => {
         return prev + item.count;
@@ -74,18 +85,16 @@ function ManageProductsForSale(props) {
     };
 
     getSubTotal();
-    getTaxTotal();
     getQuantitySold();
   }, [cart]);
 
   useEffect(() => {
-    setgGandTotal(subTotal + totalTax);
-  }, [subTotal, totalTax]);
+    setGandTotal(subTotal);
+  }, [subTotal]);
 
   useEffect(() => {
     showProducts();
     showSales();
-    loadComapny();
   }, [success]);
 
   const componentRef = useRef();
@@ -124,17 +133,7 @@ function ManageProductsForSale(props) {
       setOk(false);
     }
   };
-  const loadComapny = async () => {
-    try {
-      // setLoading(true);
-      const { data } = await axios.get(`/api/admin/settings`);
-      setCompany(data);
-      // setLoading(false);
-    } catch (err) {
-      console.log(err);
-      // setLoading(false);
-    }
-  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -143,7 +142,6 @@ function ManageProductsForSale(props) {
       const { data } = await axios.post(`/api/sales`, {
         cart,
         subTotal,
-        totalTax,
         paymentMethod,
         quantitySold,
         paidAmount,
@@ -166,11 +164,6 @@ function ManageProductsForSale(props) {
     const data = {
       columns: [
         {
-          label: 'Image',
-          field: 'image',
-          sort: 'asc',
-        },
-        {
           label: 'Name',
           field: 'name',
           sort: 'asc',
@@ -187,11 +180,6 @@ function ManageProductsForSale(props) {
           sort: 'asc',
         },
 
-        // {
-        //   label: 'Scan',
-        //   field: 'scan',
-        //   sort: 'asc',
-        // },
         {
           label: 'Action',
           field: 'action',
@@ -204,20 +192,10 @@ function ManageProductsForSale(props) {
     products &&
       products.forEach((product, index) => {
         data.rows.push({
-          image: <Avatar size={30} src={product && product.imagePath} />,
           name: `${product.name}`,
           quantity: `${product.quantity}`,
-          // price: `GHS ${
-          //   product.discount ? product.discountPrice : product.price
-          // }.00`,
-          price: `${FormatCurrency(product.discountPrice)}`,
+          price: `${FormatCurrency(product.sellingPrice)}`,
 
-          // scan: (
-          //   <QRCode
-          //     value={product.batchId}
-          //     style={{ width: '150px', height: '150px' }}
-          //   />
-          // ),
           action: (
             <>
               <div className="container">
@@ -300,27 +278,20 @@ function ManageProductsForSale(props) {
               )}
             </div>
             <div className="col-md-5">
-              <div className="row">
+              {/* <div className="row">
                 <div className="col-md-12 ">
                   <h4 className="d-inline">SUBTOTAL:</h4>
                   <h4 className="d-inline" style={{ color: '#e35102' }}>
-                    GH&#x20B5; {subTotal.toFixed(2)}
+                    {FormatCurrency(Number(subTotal))}
                   </h4>
                 </div>
-              </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <h4 className="d-inline">TAX:</h4>
-                  <h4 className="d-inline" style={{ color: '#e35102' }}>
-                    GH&#x20B5; {totalTax.toFixed(2)}
-                  </h4>
-                </div>
-              </div>
+              </div> */}
+
               <div className="row">
                 <div className="col-md-12 ">
                   <h4 className="d-inline">GRAND TOTAL:</h4>
                   <h4 className="d-inline" style={{ color: '#e35102' }}>
-                    GH&#x20B5; {(subTotal + totalTax).toFixed(2)}
+                    {FormatCurrency(grandTotal)}
                   </h4>
                 </div>
               </div>
@@ -362,13 +333,11 @@ function ManageProductsForSale(props) {
                     <div className="col-md-12">
                       <h6>{item.name}</h6>
                       <p>
-                        Amount: {item.count} X GH&#x20B5;{item.discountPrice}=
+                        Amount: {item.count} X GH&#x20B5;{item.sellingPrice}=
                         GH&#x20B5;
-                        {(item.count * item.discountPrice).toFixed(2)}
+                        {FormatCurrency(item.count * item.sellingPrice)}
                         <br />
                         Quantity: {item.count}
-                        <br />
-                        Tax: GH&#x20B5; {item.tax * item.count}
                       </p>
                       <hr />
                     </div>
@@ -396,7 +365,7 @@ function ManageProductsForSale(props) {
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value)}
                     >
-                      {['Cash', 'MobileMoney'].map((paymentMethod) => (
+                      {['Cash', 'MobileMoney', 'Gift'].map((paymentMethod) => (
                         <option
                           key={paymentMethod}
                           value={paymentMethod}
@@ -420,10 +389,7 @@ function ManageProductsForSale(props) {
                 <div className="row my-4">
                   <div className="col-md-12">
                     <h5 className="d-inline">Amount To Pay:</h5>
-                    <h5 className="d-inline">
-                      {' '}
-                      GH&#x20B5; {grandTotal.toFixed(2)}
-                    </h5>
+                    <h5 className="d-inline"> {FormatCurrency(grandTotal)}</h5>
                   </div>
                 </div>
                 <div className="row">
@@ -433,7 +399,7 @@ function ManageProductsForSale(props) {
                       {' '}
                       {paidAmount < grandTotal
                         ? `Input Paid Amount`
-                        : `GHC ${(paidAmount - grandTotal).toFixed(2)}`}
+                        : ` ${FormatCurrency(paidAmount - grandTotal)}`}
                     </h5>
                   </div>
                 </div>
@@ -443,7 +409,7 @@ function ManageProductsForSale(props) {
         ) : actionTriggered == 'ACTION_2' ? (
           <div className="invoice__preview bg-white  rounded">
             <div ref={componentRef} className="p-5" id="invoice__preview">
-              {company &&
+              {/* {company &&
                 company.map((item) => (
                   <p className="c_logo" key={item._id}>
                     {item.logo ? (
@@ -452,34 +418,25 @@ function ManageProductsForSale(props) {
                       <Avatar size={90} src={item && item.logoDefualt} />
                     )}
                   </p>
-                ))}
+                ))} */}
 
               <div className="container">
                 <div className="row">
                   <div className="col-md-7">
-                    {company &&
-                      company.map((item) => (
-                        <ul key={item.slug}>
-                          <li>
-                            <h2>{item.name}</h2>
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Email:</h6> {item.email}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Website:</h6>{' '}
-                            {item.website}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Contact:</h6>{' '}
-                            {item.contactNumber}
-                          </li>
-                          <li>
-                            <h6 className="d-inline">Address:</h6>{' '}
-                            {item.address}
-                          </li>
-                        </ul>
-                      ))}
+                    <ul>
+                      <li>
+                        <h2>{name}</h2>
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Email:</h6> {email}
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Contact:</h6> {contactNumber}
+                      </li>
+                      <li>
+                        <h6 className="d-inline">Address:</h6> {address}
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -507,11 +464,9 @@ function ManageProductsForSale(props) {
               <table width="100%" className="mb-10 table table-striped">
                 <thead>
                   <tr className="bg-gray-100 p-1">
-                    <td className="font-bold">Image</td>
                     <td className="font-bold">Name</td>
                     <td className="font-bold">Price</td>
                     <td className="font-bold">Quantity</td>
-                    <td className="font-bold">Tax</td>
                     <td className="font-bold">Total</td>
                   </tr>
                 </thead>
@@ -521,23 +476,12 @@ function ManageProductsForSale(props) {
                     item.products.map((product) => (
                       <tbody key={product._id}>
                         <tr className="h-10">
-                          <td>
-                            {' '}
-                            <Avatar
-                              size={30}
-                              src={product && product.imagePath}
-                            />
-                          </td>
                           <td>{product.name}</td>
-                          <td>GH&#x20B5; {product.discountPrice.toFixed(2)}</td>
+                          <td>GH&#x20B5; {product.sellingPrice.toFixed(2)}</td>
                           <td>{product.count}</td>
-                          <td>GH&#x20B5; {product.tax.toFixed(2)}</td>
                           <td>
                             GH&#x20B5;{' '}
-                            {(
-                              product.tax +
-                              product.count * product.discountPrice
-                            ).toFixed(2)}
+                            {(product.count * product.sellingPrice).toFixed(2)}
                           </td>
                         </tr>
                       </tbody>
@@ -554,16 +498,11 @@ function ManageProductsForSale(props) {
                           <h6 className="d-inline pl-4"> TOTAL QUANTITY:</h6>{' '}
                           {item.quantitySold}
                           <br />
-                          <h6 className="d-inline pl-4"> SUB TOTAL:</h6>{' '}
+                          {/* <h6 className="d-inline pl-4"> SUB TOTAL:</h6>{' '}
                           GH&#x20B5; {item.subTotal}
-                          <br />
-                          <h6 className="d-inline pl-4">
-                            {' '}
-                            TAX:
-                          </h6> GH&#x20B5; {item.totalTax.toFixed(2)}
-                          <br />
+                          <br /> */}
                           <h6 className="d-inline pl-4"> GRAND TOTAL:</h6>{' '}
-                          GH&#x20B5; {item.grandTotal.toFixed(2)}
+                          {FormatCurrency(item.grandTotal)}
                           <br />
                           <h6 className="d-inline pl-4">
                             {' '}
@@ -582,14 +521,11 @@ function ManageProductsForSale(props) {
                   </div>
                 </div>
               </div>
-              {company &&
-                company.map((item) => (
-                  <p className="descreption" key={item._id}>
-                    <span className="lead" style={{ fontSize: '15px' }}>
-                      {item.description}
-                    </span>
-                  </p>
-                ))}
+              <p className="descreption">
+                <span className="lead" style={{ fontSize: '15px' }}>
+                  {renderHTML(description)}
+                </span>
+              </p>
             </div>
             <div className="container">
               <div className="row">

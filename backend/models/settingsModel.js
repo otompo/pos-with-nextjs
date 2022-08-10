@@ -36,11 +36,14 @@ const settingsSchema = new Schema(
       trim: true,
       max: 32,
     },
-    logoDefualt: {
-      type: String,
-      default: '/img/preview.ico',
+    companyLogo: {
+      public_id: {
+        type: String,
+      },
+      url: {
+        type: String,
+      },
     },
-    logo: { type: String },
     description: {
       type: {},
       trim: true,

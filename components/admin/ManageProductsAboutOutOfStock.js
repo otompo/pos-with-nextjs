@@ -7,7 +7,7 @@ import Layout from '../layout/Layout';
 import moment from 'moment';
 import TextTruncate from 'react-text-truncate';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import Loader from '../layout/Loader';
 import FormatCurrency from '../FormatCurrency';
 
@@ -86,11 +86,6 @@ const ManageProductsAboutOutOfStock = () => {
     const data = {
       columns: [
         {
-          label: 'Image',
-          field: 'image',
-          sort: 'asc',
-        },
-        {
           label: 'Name',
           field: 'name',
           sort: 'asc',
@@ -106,13 +101,13 @@ const ManageProductsAboutOutOfStock = () => {
           sort: 'asc',
         },
         {
-          label: 'Unit Price',
-          field: 'price',
+          label: 'Cost Price',
+          field: 'costPrice',
           sort: 'asc',
         },
         {
-          label: 'Discount Price',
-          field: 'discountPrice',
+          label: 'Selling Price',
+          field: 'sellingPrice',
           sort: 'asc',
         },
         {
@@ -120,16 +115,7 @@ const ManageProductsAboutOutOfStock = () => {
           field: 'expireDate',
           sort: 'asc',
         },
-        {
-          label: 'Discount',
-          field: 'discount',
-          sort: 'asc',
-        },
-        {
-          label: 'Tax',
-          field: 'tax',
-          sort: 'asc',
-        },
+
         {
           label: 'Created At',
           field: 'createdat',
@@ -148,7 +134,6 @@ const ManageProductsAboutOutOfStock = () => {
     products &&
       products.forEach((product, index) => {
         data.rows.push({
-          image: <Avatar size={30} src={product && product.imagePath} />,
           name: `${product.name}`,
           category: `${
             product &&
@@ -156,11 +141,9 @@ const ManageProductsAboutOutOfStock = () => {
             product.category.map((c, i) => `${c && c.name}`)
           }`,
           quantity: `${product.quantity}`,
-          price: `${FormatCurrency(Number(product.price))}`,
-          discountPrice: `${FormatCurrency(product.discountPrice)}`,
+          costPrice: `${FormatCurrency(Number(product.costPrice))}`,
+          sellingPrice: `${FormatCurrency(Number(product.sellingPrice))}`,
           expireDate: `${moment(product.expireDate).fromNow()}`,
-          discount: `${product.discount}`,
-          tax: `${product.tax}`,
           createdat: `${moment(product.createdAt).fromNow()}`,
 
           action: (
@@ -178,24 +161,12 @@ const ManageProductsAboutOutOfStock = () => {
                       }
                       className="pt-1 pl-3"
                     >
-                      {/* <Link></Link> */}
                       <RedoOutlined
                         className="text-primary d-flex justify-content-center"
                         style={{ cursor: 'pointer', fontSize: 30 }}
                       />
                     </span>
                   </div>
-                  {/* <div className="col-md-6">
-                    <span
-                      onClick={() => handleDelete(index)}
-                    
-                    >
-                      <DeleteOutlined
-                        className="text-danger d-flex justify-content-center"
-                        style={{ cursor: 'pointer', fontSize: 20 }}
-                      />
-                    </span>
-                  </div> */}
                 </div>
               </div>
             </>
@@ -227,13 +198,11 @@ const ManageProductsAboutOutOfStock = () => {
           onOk={handleOk}
           onCancel={handleCancel}
           footer={null}
-          // width={300}
         >
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <input
                 type="number"
-                // name="quantity"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 className="form-control mb-4 p-2"
