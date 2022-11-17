@@ -103,7 +103,7 @@ const UserProfilePage = () => {
 export async function getServerSideProps(context) {
   const session = await getSession({ req: context.req });
 
-  if (!session || !session.user.role.includes('Admin')) {
+  if (!session || !session.user.role.includes('admin')) {
     return {
       redirect: {
         destination: '/',

@@ -164,11 +164,6 @@ const ManageUsers = () => {
     const data = {
       columns: [
         {
-          label: 'Image',
-          field: 'image',
-          sort: 'asc',
-        },
-        {
           label: 'Name',
           field: 'name',
           sort: 'asc',
@@ -200,21 +195,6 @@ const ManageUsers = () => {
     users &&
       users.forEach((user, index) => {
         data.rows.push({
-          image: user.profileImage ? (
-            <Avatar
-              size={30}
-              src={
-                <Image
-                  src={user && user.profileImage && user.profileImage.Location}
-                />
-              }
-            />
-          ) : (
-            <Avatar
-              size={30}
-              src={<Image src={user && user.picture} preview={false} />}
-            />
-          ),
           name: `${user.name}`,
           join: `${moment(user.createdAt).fromNow()}`,
           role: `${user.role}`,
@@ -228,7 +208,10 @@ const ManageUsers = () => {
                     href={`/admin/user/profile/${user.username}`}
                   >
                     <a>
-                      <EyeOutlined className="text-success d-flex justify-content-center" />
+                      <EyeOutlined
+                        className="text-success d-flex justify-content-center"
+                        style={{ fontSize: 20 }}
+                      />
                     </a>
                   </Link>
                 </div>
@@ -241,7 +224,7 @@ const ManageUsers = () => {
                       >
                         <CoffeeOutlined
                           className="text-danger d-flex justify-content-center "
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', fontSize: 20 }}
                         />
                       </span>
                     </Tooltip>
@@ -253,7 +236,7 @@ const ManageUsers = () => {
                       >
                         <CoffeeOutlined
                           className="text-success d-flex justify-content-center "
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', fontSize: 20 }}
                         />
                       </span>
                     </Tooltip>
@@ -267,7 +250,7 @@ const ManageUsers = () => {
                     >
                       <DeleteOutlined
                         className="text-danger d-flex justify-content-center "
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', fontSize: 20 }}
                       />
                     </span>
                   </Tooltip>

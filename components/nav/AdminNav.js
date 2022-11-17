@@ -1,13 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import { getSession } from 'next-auth/client';
+import LoadingToRedirect from '../LoadingToRedirect';
+import axios from 'axios';
+import { Context } from '../../context';
+import { useRouter } from 'next/router';
 
 const AdminNav = () => {
+  const router = useRouter();
+  const {
+    state: { user },
+    dispatch,
+  } = useContext(Context);
   const [current, setCurrent] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     process.browser && setCurrent(window.location.pathname);
   }, [process.browser && window.location.pathname]);
+
+  useEffect(() => {
+    if (user) getCurrentAdmin();
+  }, [user]);
+
+  const getCurrentAdmin = async () => {
+    try {
+      const { data } = await axios.get('/api/admin/current');
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      router.push('/');
+    }
+  };
+
+  if (loading) {
+    return <LoadingToRedirect />;
+  }
 
   return (
     <div className="nav flex-column nav-pills mt-2">

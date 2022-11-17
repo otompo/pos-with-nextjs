@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { Badge, Spin, Card } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
@@ -121,7 +121,7 @@ const EditExpense = () => {
 export async function getServerSideProps(context) {
   const session = await getSession({ req: context.req });
 
-  if (!session || !session.user.role.includes('Admin')) {
+  if (!session || !session.user.role.includes('admin')) {
     return {
       redirect: {
         destination: '/',

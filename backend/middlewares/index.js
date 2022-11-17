@@ -1,8 +1,6 @@
-
 import User from '../models/userModel';
 import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
-
 
 export const isAdmin = (req, res, next) => {
   // console.log(req.user);
@@ -13,40 +11,23 @@ export const isAdmin = (req, res, next) => {
       });
     }
 
-    if (!req.user.role.includes('Admin')) {
+    if (!req.user.role.includes('admin')) {
       return next(new AppError('Admin resource. Access denied', 403));
     }
     next();
   });
 };
 
-export const isAuthor = catchAsync(async (req, res, next) => {
-  // console.log(req.user);
-  await User.findById({ _id: req.user._id }).exec((err, user) => {
-    if (err || !user) {
-      return res.status(400).json({
-        error: 'user not found....',
-      });
-    }
-
-    if (!req.user.role.includes('Author')) {
-      return next(new AppError('Author resource. Access denied', 403));
-    }
-    next();
-  });
-});
-
 // Admin Middleware
 export const adminMiddleware = async (req, res, next) => {
   const user = await User.findById(req.user._id).exec();
-  if (!user.role.includes('Admin')) {
+  if (!user.role.includes('admin')) {
     return res.status(400).json({
       error: 'Admin resource. Access denied',
     });
   }
   next();
 };
-
 
 // AuthUserMiddleware
 export const authMiddleware = async (req, res, next) => {

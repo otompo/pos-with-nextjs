@@ -37,7 +37,6 @@ const ManageStatistics = () => {
       {
         data: reports.map((x) => x.totalCost),
         label: 'Cost',
-
         backgroundColor: '#161615',
         fill: true,
         lineTension: 0.5,

@@ -16,7 +16,7 @@ const AdminIndex = () => {
 export async function getServerSideProps(context) {
   const session = await getSession({ req: context.req });
   // console.log(session);
-  if (!session || !session.user.role.includes('Admin')) {
+  if (!session || !session.user.role.includes('admin')) {
     return {
       redirect: {
         destination: '/',

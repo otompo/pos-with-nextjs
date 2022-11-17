@@ -3,8 +3,6 @@ import AdminRoute from '../../../../components/routes/AdminRoutes';
 import Layout from '../../../../components/layout/Layout';
 import { getSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
-import { Avatar } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -22,12 +20,10 @@ const UserProfilePage = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(`/api/profile/${username}`);
-      // console.log(data);
       setUser(data);
       setLoading(false);
     } catch (err) {
       console.log(err.response.data.message);
-      toast.error(err.response.data.message);
       setLoading(false);
     }
   };
@@ -54,7 +50,7 @@ const UserProfilePage = () => {
                     <tr>
                       <td>{user && user.name}</td>
                       <td>{user && user.email}</td>
-                      <td>{user && user.role}</td>
+                      <td>{user && user.role + `${' '}`}</td>
                       <td>{user && user.generatedPasword}</td>
                       <td>{moment(user.createdAt).fromNow()}</td>
                       <td>{moment(user.last_login_date).fromNow()}</td>
@@ -85,7 +81,7 @@ const UserProfilePage = () => {
 export async function getServerSideProps(context) {
   const session = await getSession({ req: context.req });
 
-  if (!session || !session.user.role.includes('Admin')) {
+  if (!session || !session.user.role.includes('admin')) {
     return {
       redirect: {
         destination: '/',

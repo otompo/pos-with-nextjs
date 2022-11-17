@@ -41,8 +41,8 @@ const userSchema = new Schema(
 
     role: {
       type: [String],
-      default: ['Staff'],
-      enum: ['Staff', 'Admin'],
+      default: ['staff'],
+      enum: ['staff', 'admin'],
     },
     generatedPasword: {
       type: String,

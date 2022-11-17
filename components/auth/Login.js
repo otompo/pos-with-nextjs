@@ -9,7 +9,6 @@ import { Spin } from 'antd';
 const Login = () => {
   const router = useRouter();
   const { state, dispatch } = useContext(Context);
-
   const [email, setEmail] = useState('sasco@gmail.com');
   const [password, setPassword] = useState('otompo123@');
   const [loading, setLoading] = useState(false);

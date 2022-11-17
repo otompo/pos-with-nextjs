@@ -10,7 +10,6 @@ import {
   ExclamationCircleOutlined,
   UploadOutlined,
   RedoOutlined,
-  DownloadOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import moment from 'moment';
@@ -19,7 +18,6 @@ import Layout from '../layout/Layout';
 import { toast } from 'react-hot-toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Loader from '../layout/Loader';
 import FormatCurrency from '../FormatCurrency';
 const { confirm } = Modal;
 

@@ -82,7 +82,7 @@ const UserNav = () => {
         </a>
       </Link>
 
-      {user && user.role && !user.role.includes('Admin') ? '' : <AdminNav />}
+      {user && user.role && !user.role.includes('admin') ? '' : <AdminNav />}
 
       <p
         onClick={logout}
